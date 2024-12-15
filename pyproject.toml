@@ -1,0 +1,13 @@
+[project]
+name = "esxi-testing-toolkit"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+dependencies = [
+    "typer",
+    "xmltodict",
+    "requests",
+    "python-dotenv"
+]
+[project.scripts]
+esxi-testing-toolkit = "cli:main"
