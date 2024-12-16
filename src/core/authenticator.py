@@ -2,6 +2,10 @@
 import requests
 import xmltodict
 import typer
+import logging
+
+# logger boilerplate
+logger = logging.getLogger(__name__)
 
 class ESXiAuthenticator:
     def __init__(self, host, username, password, verify_ssl=False):
@@ -48,7 +52,7 @@ class ESXiAuthenticator:
             </Body>
         </Envelope>"""
 
-    def authenticate(self):
+    def authenticate_api(self):
         """
         Authenticate to ESXi host and retrieve session cookie
         
@@ -65,18 +69,35 @@ class ESXiAuthenticator:
             
             response.raise_for_status()  # Raise exception for HTTP errors
             
+            if not response.cookies.get("vmware_soap_session"):
+                logging.error(f'Session cookie not be retrieved from ESXi host. Ensure credentials are correct. Cookies: {response.cookies.items()} Request Response: {response.text}')
+                raise SystemExit
+
             # Extract SOAP session cookie
             self.session_cookie = response.cookies.get("vmware_soap_session")
-            
-            if not self.session_cookie:
-                raise GeneratorExit("Failed to obtain session cookie")
-            
+                        
             # Update headers with session cookie
             self.headers.update({
                 'Cookie': f'vmware_client=VMWare; vmware_soap_session={self.session_cookie}'
             })
             
             return self.headers
+        # ESXi host isn't reachable
+        except requests.exceptions.ConnectionError as e:
+            logging.error(f'Could not connect to ESXi host. Ensure the system is reachable and try again: {str(e)}')
+            raise SystemExit()
+        # ESXi host is reachable but returns HTTP error
+        except requests.exceptions.HTTPError as e:
+            logging.error(f'Failed to obtain session cookie for {self.username}. Check credentials and try again: {str(e)}')
+            raise SystemExit()
+        # Anything else
+        except requests.exceptions.RequestException as e:
+            logging.error(f'Authentication failed. Ensure the ESXi system is reachable and try again {str(e)}')
+            raise SystemExit()
+    def authenticate_ssh(self):
+        """
+        Authenticate to ESXi host via SSH.
         
-        except requests.RequestException as e:
-            raise GeneratorExit(f"Authentication failed: {str(e)}")
+        :return: SSH session
+        """
+        raise NotImplementedError
