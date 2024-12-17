@@ -10,4 +10,4 @@ dependencies = [
     "python-dotenv"
 ]
 [project.scripts]
-esxi-testing-toolkit = "cli:main"
+esxi-testing-toolkit = "main:main"

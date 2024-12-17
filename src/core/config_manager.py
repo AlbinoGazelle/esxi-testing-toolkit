@@ -3,9 +3,13 @@
 import os
 from dotenv import dotenv_values
 import logging
-
+from core.connection import ESXiConnection
 # logger boilerplate
 logger = logging.getLogger(__name__)
+
+# used to share connection state between modules
+shared_connection: ESXiConnection = None
+
 def retrieve_secrets():
     """
     Retrieves secrets from .env or environmental variables

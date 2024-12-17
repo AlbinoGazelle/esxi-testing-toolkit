@@ -6,6 +6,8 @@ import logging
 # import core components
 from core.connection import ESXiConnection
 from core.config_manager import retrieve_secrets
+import core.config_manager
+import cli.vm_commands
 
 # used to suppress insecure request warnings from requests
 from urllib3.exceptions import InsecureRequestWarning
@@ -20,29 +22,27 @@ logging.basicConfig(level=logging.INFO,format='%(asctime)s | %(levelname)-5s | %
 # typer boilerplate
 app = typer.Typer()
 
-# Generic CLI command so Typer still works.
-@app.command()
-def hello_world(name: str):
-    print(f"Hello {name}")
+# Get secrets
+secrets = retrieve_secrets()
+
+# Attempt connection to ESXi host using provided information
+logging.info(f'Attempting to connect to {secrets['host']} as {secrets['username']}')
+connection = ESXiConnection(
+    host=secrets['host'],
+    username=secrets['username'],
+    password=secrets['password'],
+    verify_ssl=False
+)
+connection.connect_api()
+
+# push connection to config manager to allow shared use between modules
+core.config_manager.shared_connection = connection
+
+# create commands from shared modules
+app.command()(cli.vm_commands.delete_vm_snapshots)
 
 # app entrypoint
-def main():
-    
-    # get secrets
-    secrets = retrieve_secrets()
-
-    # Attempt connection to ESXi host using provided information
-    logger.info(f'Attempting to connect to {secrets['host']} as {secrets['username']}')
-    
-    connection = ESXiConnection(
-        host=secrets['host'],
-        username=secrets['username'],
-        password=secrets['password'],
-        verify_ssl=False
-    )
-    headers = connection.connect_api()
-    
-    request = connection.send_request(payload='example')
+def main():    
     # start Typer app
     app()
     
