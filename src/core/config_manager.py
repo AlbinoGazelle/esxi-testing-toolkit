@@ -4,11 +4,24 @@ import os
 from dotenv import dotenv_values
 import logging
 from core.connection import ESXiConnection
+
+
 # logger boilerplate
 logger = logging.getLogger(__name__)
 
-# used to share connection state between modules
-shared_connection: ESXiConnection = None
+def initialize_connection():
+    """
+    
+    """
+    # Retrieve secrets from .env or environment variables
+    secrets = retrieve_secrets()
+    
+    # Attempt connection to ESXi host using information in env/.env
+    logging.info(f'Attempting to connect to {secrets['host']} as {secrets['username']}')
+    connection = ESXiConnection(host=secrets['host'],username=secrets['username'],password=secrets['password'],verify_ssl=False)
+    connection.connect_api()
+    # push connection to config manager to allow shared use between modules
+    return connection
 
 def retrieve_secrets():
     """

@@ -8,7 +8,6 @@ from core.connection import ESXiConnection
 from core.config_manager import retrieve_secrets
 import core.config_manager
 import cli.vm_commands
-
 # used to suppress insecure request warnings from requests
 from urllib3.exceptions import InsecureRequestWarning
 
@@ -22,28 +21,10 @@ logging.basicConfig(level=logging.INFO,format='%(asctime)s | %(levelname)-5s | %
 # typer boilerplate
 app = typer.Typer()
 
-# Get secrets
-secrets = retrieve_secrets()
-
-# Attempt connection to ESXi host using provided information
-logging.info(f'Attempting to connect to {secrets['host']} as {secrets['username']}')
-connection = ESXiConnection(
-    host=secrets['host'],
-    username=secrets['username'],
-    password=secrets['password'],
-    verify_ssl=False
-)
-connection.connect_api()
-
-# push connection to config manager to allow shared use between modules
-core.config_manager.shared_connection = connection
-
-# create commands from shared modules
-app.command()(cli.vm_commands.delete_vm_snapshots)
+app.add_typer(cli.vm_commands.app, name="vm", help="Perform actions on Virtual Machines: delete_vm_snapshots | power_off_vm")
 
 # app entrypoint
-def main():    
-    # start Typer app
+def main():
     app()
     
 if __name__ == "__main__":
