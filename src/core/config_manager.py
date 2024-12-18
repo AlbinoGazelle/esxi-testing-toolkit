@@ -9,9 +9,12 @@ from core.connection import ESXiConnection
 # logger boilerplate
 logger = logging.getLogger(__name__)
 
-def initialize_connection():
+def initialize_api_connection():
     """
+    Initializes connection to ESXi API.
     
+    :param: None
+    :return: ESXiConnection object
     """
     # Retrieve secrets from .env or environment variables
     secrets = retrieve_secrets()
@@ -21,6 +24,22 @@ def initialize_connection():
     connection = ESXiConnection(host=secrets['host'],username=secrets['username'],password=secrets['password'],verify_ssl=False)
     connection.connect_api()
     # push connection to config manager to allow shared use between modules
+    return connection
+
+def initialize_ssh_connection():
+    """
+    Initializes SSH connection to ESXi host
+    
+    :param: None
+    :return: ESXiConnection Object
+    """
+    # Retrieve secrets from .env or environment variables
+    secrets = retrieve_secrets()
+    
+    # Attempt connection to ESXi host using information in env/.env
+    logging.info(f'Attempting to connect to {secrets['host']} as {secrets['username']} via SSH')
+    connection = ESXiConnection(host=secrets['host'],username=secrets['username'],password=secrets['password'],verify_ssl=False)
+    connection.connect_ssh()
     return connection
 
 def retrieve_secrets():
