@@ -1,5 +1,6 @@
 # SOAP API and SSH connection management
 import paramiko.client
+import paramiko.ssh_exception
 from core.authenticator import ESXiAuthenticator
 import logging
 import requests
@@ -48,21 +49,31 @@ class ESXiConnection:
         
         :return: SSH session
         """
-        #TODO: ERROR HANDLING WHEN SSH CONNECTION CANNOT BE MADE
-        client = paramiko.client.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(self.host, username=self.username, password=self.password)
-        self.ssh_conn = client
+        try:
+            client = paramiko.client.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            client.connect(self.host, username=self.username, password=self.password)
+            self.ssh_conn = client
+        except paramiko.ssh_exception.NoValidConnectionsError:
+            logging.error(f'Error authenticating to {self.host} using SSH. Ensure SSH is enabled and running. {str(e)}')
+            raise SystemExit()
+        except paramiko.AuthenticationException as e:
+            logging.error(f'Error authenticating to {self.host} using provided credentials. Please check supplied credentials and try again. {str(e)}')
+            raise SystemExit()
+        except paramiko.SSHException as e:
+            logging.error(f'Error connecting to {self.host} with SSH. Check to ensure SSH is enabled and running. {str(e)}')
+            raise SystemExit()
+        except BlockingIOError as e:
+            logging.error(f'Error connecting to {self.host} with SSH. Check to ensure SSH is enabled and the host is reachable. {str(e)}')
+            raise SystemExit()
+        
         
     def send_ssh_command(self, command: str):
         """
         Sends an SSH command to the ESXi host
         
         :param: command (str): Command to send
-        :return: True if successful, False if unsuccessful
         """
-        #_stdin, _stdout, _stderr = self.ssh_conn.exec_command(command)
-        #print(_stdout.read().decode())
         # need to send command via `invoke_shell` for it to show up in `shell.log` in ESXi system
         shell = self.ssh_conn.invoke_shell()
         # not sure why we need so many sleeps??
