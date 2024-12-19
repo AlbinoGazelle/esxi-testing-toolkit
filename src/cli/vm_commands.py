@@ -22,22 +22,33 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
     Deletes all snapshots for a given virtual machine.
     Example: esxi-testing-toolkit 1 ssh
     """
-    
     if method.value == "api":
         connection = initialize_api_connection()
         logging.info(f'Sending API request to delete snapshots for vm: {vm_id}')
         payload = f"""<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-e243</operationID></Header><Body><RemoveAllSnapshots_Task xmlns="urn:vim25"><_this type="VirtualMachine">{vm_id}</_this></RemoveAllSnapshots_Task></Body></Envelope>"""
         request = connection.send_request(payload=payload)
-    else:
+        # get hostd logs via SSH here.
+    elif method.value == "ssh":
         # init SSH connection to ESXi host
         connection = initialize_ssh_connection()
+        # send warning about vim-cmd
+        logging.warning('vim-cmd does NOT indicate if the snapshot removal was successful or not, only if the VM id exists.')
         # send command
-        connection.send_ssh_command('ls -la')
+        command = f'vim-cmd vmsvc/snapshot.removeall {vm_id}'
+        command_output = connection.send_ssh_command(command)
+        # if the VM id that was passed doesn't exist, vim-cmd will produce a vim.fault.NotFound error
+        if "vim.fault.NotFound" in command_output:
+            logging.error(f'VM Id {vm_id} is not found on the ESXi host.')
+            raise SystemExit()
+        else:
+            logging.info(f'SSH command {command} executed successfully.')
+            # get shell.log logs here
 
 @app.command()
 def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
     """
-    Powers off a VM. Example: esxi-testing-toolkit 1 api
+    Powers off a VM. 
+    Example: esxi-testing-toolkit 1 api
     """
     if method.value == "api":
         logging.info(f'Power off VM command is not yet supported! {vm_id}|{method.value}')
