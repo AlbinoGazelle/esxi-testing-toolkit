@@ -54,7 +54,7 @@ class ESXiConnection:
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             client.connect(self.host, username=self.username, password=self.password)
             self.ssh_conn = client
-        except paramiko.ssh_exception.NoValidConnectionsError:
+        except paramiko.ssh_exception.NoValidConnectionsError as e:
             logging.error(f'Error authenticating to {self.host} using SSH. Ensure SSH is enabled and running. {str(e)}')
             raise SystemExit()
         except paramiko.AuthenticationException as e:
@@ -79,13 +79,14 @@ class ESXiConnection:
         # not sure why we need so many sleeps??
         # TODO: ERROR HANDLING WHEN SSH COMMAND FAILS
         time.sleep(1)
-        shell.send('echo "execute command with esxi-testing-toolkit"\r\n')
+        shell.send('echo "executing command with esxi-testing-toolkit"\r')
         time.sleep(1)
-        shell.send('ls -la\r\n')
+        shell.send(f'{command}\r')
         time.sleep(1)
-        data = shell.recv(2048)
-        print(data.decode())
-        
+        output = shell.recv(-1).decode()
+        shell.close()
+        return output
+            
     def send_request(self, payload):
         """
         Sends provided payload to ESXi host
