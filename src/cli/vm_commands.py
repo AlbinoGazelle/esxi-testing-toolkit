@@ -17,17 +17,20 @@ class ExecutionChoice(str, Enum):
 app = typer.Typer()
 
 @app.command()
-def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
+def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Deletes all snapshots for a given virtual machine.
-    Example: esxi-testing-toolkit 1 ssh
+    Example: esxi-testing-toolkit vm delete-vm-snapshots 1 ssh
     """
     if method.value == "api":
         connection = initialize_api_connection()
         logging.info(f'Sending API request to delete snapshots for vm: {vm_id}')
         payload = f"""<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-e243</operationID></Header><Body><RemoveAllSnapshots_Task xmlns="urn:vim25"><_this type="VirtualMachine">{vm_id}</_this></RemoveAllSnapshots_Task></Body></Envelope>"""
         request = connection.send_request(payload=payload)
-        # get hostd logs via SSH here.
+        # get hostd logs via SSH here if verbose is enabled
+        if verbose:
+            logs = connection.retrieve_log('/var/log/hostd.log')
+            logging.info(logs)
     elif method.value == "ssh":
         # init SSH connection to ESXi host
         connection = initialize_ssh_connection()
@@ -42,13 +45,15 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
             raise SystemExit()
         else:
             logging.info(f'SSH command {command} executed successfully.')
-            # get shell.log logs here
-
+            # get shell.log logs here if erbose is enabled
+            if verbose:
+                logs = connection.retrieve_log('/var/log/shell.log')
+                logging.info(logs)
 @app.command()
 def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
     """
     Powers off a VM. 
-    Example: esxi-testing-toolkit 1 api
+    Example: esxi-testing-toolkit vm power-off-vm 1 api
     """
     if method.value == "api":
         logging.info(f'Power off VM command is not yet supported! {vm_id}|{method.value}')
