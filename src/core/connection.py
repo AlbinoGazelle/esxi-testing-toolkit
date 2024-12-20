@@ -6,12 +6,11 @@ import logging
 import requests
 import xmltodict
 import paramiko
-from dataclasses import dataclass
 import time
+import xmltodict
 # logger boilerplate
 logger = logging.getLogger(__name__)
 
-@dataclass
 class ESXiConnection:
     def __init__(self, host, username, password, verify_ssl=False):
         """
@@ -72,12 +71,12 @@ class ESXiConnection:
         """
         Sends an SSH command to the ESXi host
         
-        :param: command (str): Command to send
+        :param: command (str): Command to send.
+        :return: output (str): Output of command that was executed.
+        :warning: This function cannot determine if a command was successfully executed or not. You must parse the output and make a determination there.
         """
         # need to send command via `invoke_shell` for it to show up in `shell.log` in ESXi system
         shell = self.ssh_conn.invoke_shell()
-        # not sure why we need so many sleeps??
-        # TODO: ERROR HANDLING WHEN SSH COMMAND FAILS
         time.sleep(1)
         shell.send('echo "executing command with esxi-testing-toolkit"\r')
         time.sleep(1)
@@ -86,6 +85,27 @@ class ESXiConnection:
         output = shell.recv(-1).decode()
         shell.close()
         return output
+    
+    def retrieve_log(self, log_file):
+        """
+        Uses SSH to retrieve log files from host.
+        
+        :param: log file full path (/var/log/logfile.log).
+        :return: last 30 lines of the log file.
+        """
+        logging.info(f'retrieving log file {log_file} from host.')
+        self.connect_ssh()
+        # give some time for user to see output
+        time.sleep(3)
+        stdin, stdout, stderr = self.ssh_conn.exec_command(f'tail -n 15 {log_file}')
+        stdout = ''.join(stdout.readlines())
+        stderr = ''.join(stderr.readlines())
+        if stderr:
+            logging.info(f'Error retrieving {log_file}. Ensure path is correct and try again. {stderr}')
+            pass
+        else:
+            logging.info(f'Successfully retrieved {log_file}.')
+            return stdout
             
     def send_request(self, payload):
         """
@@ -103,7 +123,7 @@ class ESXiConnection:
             )
             response.raise_for_status()
             logging.info(f'Successfully sent request.')
-            return True
+            return xmltodict.parse(response.text)
         except requests.exceptions.ConnectionError as e:
             logging.error(f'Could not connect to ESXi host. Ensure the system is reachable and try again: {str(e)}')
             raise SystemExit()
