@@ -7,6 +7,10 @@ pipx uninstall-all
 pipx install .
 
 # execute tests
-esxi-testing-toolkit vm delete-vm-snapshots 1 api
+esxi-testing-toolkit vm delete-vm-snapshots 1 api --verbose
 
-esxi-testing-toolkit vm delete-vm-snapshots 1 ssh
+esxi-testing-toolkit vm delete-vm-snapshots 1 api --no-verbose
+
+esxi-testing-toolkit vm delete-vm-snapshots 1 ssh --verbose
+
+esxi-testing-toolkit vm delete-vm-snapshots 1 ssh --no-verbose
