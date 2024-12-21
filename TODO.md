@@ -1,0 +1,23 @@
+- create `retrieve_logs` that retrieves the last X lines from hostd or shell.log and prints to console.
+    - Add divider print statement to make it obvious when we're printing logs from ESXi host.
+    - Evaluate if we should be printing the logs or retrieving the files themselves and placing them in a directory.
+- add skeleton functions for enumerate all VM ids. 
+    - add warning to suggest that users run this command first to see valid VM ids
+- Create directory of XML payloads to serve as the basis for correlated commands
+    - src/payloads/delete_vm_snapshot.xml -> src/cli/vm_commands.py reads create_vm.xml and uses send_request function to send request.
+- Populate README.md
+    - Project overview.
+    - Use cases.
+    - Install instructions
+        - Pipx
+        - Direct execution
+    - Contributions
+        - Tests
+- Create tests
+    - research how
+- Create requirements.txt to support direct execution.
+    - Integrate into pyproject.toml
+- Populate pyproject.toml
+    - email
+    - description
+    - etc
