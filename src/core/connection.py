@@ -1,16 +1,19 @@
 # SOAP API and SSH connection management
 import paramiko.client
 import paramiko.ssh_exception
-from core.authenticator import ESXiAuthenticator
 import logging
 import requests
 import xmltodict
 import paramiko
 import time
 import xmltodict
+import os
+from core.authenticator import ESXiAuthenticator
+import uuid
+
 # logger boilerplate
 logger = logging.getLogger(__name__)
-
+logging.getLogger('paramiko').setLevel(logging.CRITICAL+1)
 class ESXiConnection:
     def __init__(self, host, username, password, verify_ssl=False):
         """
@@ -29,6 +32,7 @@ class ESXiConnection:
         self.host = host
         self.headers = None
         self.ssh_conn = None
+        self.guid = str(uuid.uuid4()).split('-')[0]
         
     def connect_api(self):
         """
@@ -86,26 +90,26 @@ class ESXiConnection:
         shell.close()
         return output
     
-    def retrieve_log(self, log_file):
+    def retrieve_log(self, log_file: str):
         """
         Uses SSH to retrieve log files from host.
         
         :param: log file full path (/var/log/logfile.log).
-        :return: last 30 lines of the log file.
+        :return: True if successful, raises SystemExit if not.
         """
-        logging.info(f'retrieving log file {log_file} from host.')
-        self.connect_ssh()
-        # give some time for user to see output
-        time.sleep(3)
-        stdin, stdout, stderr = self.ssh_conn.exec_command(f'tail -n 15 {log_file}')
-        stdout = ''.join(stdout.readlines())
-        stderr = ''.join(stderr.readlines())
-        if stderr:
-            logging.info(f'Error retrieving {log_file}. Ensure path is correct and try again. {stderr}')
-            pass
-        else:
-            logging.info(f'Successfully retrieved {log_file}.')
-            return stdout
+        # copy logs to local system using scp or something else
+        logging.info(f'Retrieving {log_file} from ESXi host.')
+        sftp = self.ssh_conn.open_sftp()
+        filename = log_file.split('/')[-1]
+        local_path = f"{os.getcwd()}/logs/{self.guid}_{filename}"
+        try:
+            sftp.get(log_file, local_path)
+        except FileNotFoundError as e:
+            logging.error(f'{log_file} was not found. Cannot retrieve logs automatically: {e}')
+            raise SystemExit()
+        logging.info(f'{local_path} successfully generated.')
+        sftp.close()
+        return True
             
     def send_request(self, payload):
         """
@@ -137,19 +141,6 @@ class ESXiConnection:
             raise SystemExit()
         except Exception as e:
             logging.error(f'Failed to send payload: {e}')
-    def return_logs(self, log_file: str, lines: int):
-        """
-        Returns lines from specific log file to console.
-        
-        :param: log_file (str): Log file to get lines from.
-        :param: lines (int): Number of lines to return.
-        """
-        logging.error('Returning log from ESXi host is not yet supported!')
-        
-        # need to use generic SSH connection to pull logs back to stdout
-        # ssh_conn = self.connect_ssh()
-        # ssh_conn.execute_ssh('cat /var/log/hostd.log')
-        raise NotImplementedError
             
 def parse_request_error(request_response: str):
     """
