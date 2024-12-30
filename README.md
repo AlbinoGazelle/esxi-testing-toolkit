@@ -1,6 +1,6 @@
 <h1>
 <p align="center">
-<span style='font-size:75px;'>&#129520;</span>
+<span style='font-size:100px;'>&#129520;</span>
 <br>ESXi Testing Toolkit
 </h1>
   <p align="center">
