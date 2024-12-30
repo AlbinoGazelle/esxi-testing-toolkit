@@ -54,12 +54,22 @@ python3 -m pip install --user pipx
 python3 -m pipx ensurepath
 ```
 
-Use pipx to install esxi-testing-toolkit
+Use pipx to install esxi-testing-toolkit.
 ```
 cd esxi-testing-toolkit
 pipx install .
-esxi-testing-toolkit --help
+esxi-testing-toolkit --install-completion
 ```
+Restart shell for command completion.
+
+## pip
+```
+cd esxi-testing-toolkit
+pip install .
+esxi-testing-toolkit --install-completion
+```
+Restart shell for command completion.
+
 # Usage
 
 # Detections
