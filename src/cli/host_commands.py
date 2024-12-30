@@ -39,3 +39,10 @@ def enable_ssh(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=
     else:
         logging.error(f'Enabling SSH access is not yet supported via {method.value}!')
         raise NotImplementedError
+    
+@app.command()
+def get_all_vm_ids(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
+    """
+    Returns a list of VM ids present on the ESXi Host
+    """
+    raise NotImplementedError
