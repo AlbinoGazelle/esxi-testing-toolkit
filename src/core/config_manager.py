@@ -4,7 +4,10 @@ import os
 from dotenv import dotenv_values
 import logging
 from core.connection import ESXiConnection
+import uuid
 
+# create global guid used for tracking sessions
+guid = str(uuid.uuid4()).split('-')[0]
 
 # logger boilerplate
 logger = logging.getLogger(__name__)
