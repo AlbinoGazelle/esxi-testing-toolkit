@@ -1,6 +1,6 @@
 <h1>
 <p align="center">
-<span style='font-size: 3em;'>&#129520;</span>
+<span style='markdown-body: 3em;'>&#129520;</span>
 <br>ESXi Testing Toolkit
 </h1>
   <p align="center">
