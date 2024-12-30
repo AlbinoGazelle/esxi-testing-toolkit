@@ -45,7 +45,7 @@ Clone the repository and follow one of the supported installation methods.
 ```
 git clone https://github.com/AlbinoGazelle/esxi-testing-toolkit.git
 ```
-## pipx
+## pipx (Recommended)
 
 Install pipx with the following command.
 ```
@@ -59,11 +59,6 @@ cd esxi-testing-toolkit
 pipx install .
 esxi-testing-toolkit --help
 ```
-
-## Vanilla Python
-
-
-
 # Usage
 
 # Detections
