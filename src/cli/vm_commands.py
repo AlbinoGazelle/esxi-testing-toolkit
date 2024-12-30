@@ -4,7 +4,6 @@ import typer
 from typing_extensions import Annotated
 from enum import Enum
 
-
 class ExecutionChoice(str, Enum):
     """
     Enum for different methods of executing commands.
@@ -27,6 +26,8 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
         logging.info(f'Sending API request to delete snapshots for vm: {vm_id}')
         payload = f"""<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-e243</operationID></Header><Body><RemoveAllSnapshots_Task xmlns="urn:vim25"><_this type="VirtualMachine">{vm_id}</_this></RemoveAllSnapshots_Task></Body></Envelope>"""
         request = connection.send_request(payload=payload)
+        
+        logging.info(f"Task {request['soapenv:Envelope']['soapenv:Body']['RemoveAllSnapshots_TaskResponse']['returnval']['#text']} successful. All snapshots for VM {vm_id} have been deleted.")
         # get hostd logs via SSH here if verbose is enabled
         if verbose:
             logs = connection.retrieve_log('/var/log/hostd.log')
