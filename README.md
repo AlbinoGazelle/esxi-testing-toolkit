@@ -1,6 +1,7 @@
 <h1>
 <p align="center">
-  <br>ESXi Testing Toolkit
+<span style='font-size:75px;'>&#129520;</span>
+<br>ESXi Testing Toolkit
 </h1>
   <p align="center">
     Simple and easy to use CLI tool to test ESXi detections.
