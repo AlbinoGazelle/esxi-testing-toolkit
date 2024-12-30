@@ -18,6 +18,8 @@
   </p>
 </p>
 
+<gif of toolkit running delete snapshots>
+
 ## Disclaimer
 
 >[!CAUTION]  
@@ -27,11 +29,8 @@
 
 ESXi Testing Toolkit is a command-line utility designed to help security teams test detections deployed in ESXi environments. It takes heavy inspiration from [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) but provides ESXi-specific enhancements and a simpler user experience.
 
-<gif of toolkit running delete snapshots>
+<talk about methods of execution and modules here>
 
-### Modules
-
-The toolkit is split into **vm** and **host** modules. The **vm** module performs tests on a single virtual machine while the **host** module performs tests on the ESXi host.
 
 ### Tests
 
@@ -40,6 +39,7 @@ After [installing](#installation) the toolkit run the following command to view 
 ```
 esxi-testing-toolkit list all
 ```
+
 
 # Installation
 Clone the repository and follow one of the supported installation methods.
