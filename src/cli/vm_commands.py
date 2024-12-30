@@ -49,7 +49,6 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
             # get shell.log logs here if erbose is enabled
             if verbose:
                 logs = connection.retrieve_log('/var/log/shell.log')
-                logging.info(logs)
 @app.command()
 def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
     """
