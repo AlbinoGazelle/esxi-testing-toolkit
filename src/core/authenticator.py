@@ -1,7 +1,5 @@
 # Authentication Handling
 import requests
-import xmltodict
-import typer
 import logging
 
 # logger boilerplate

@@ -4,7 +4,6 @@ import os
 from dotenv import dotenv_values
 import logging
 from core.connection import ESXiConnection
-import uuid
 
 # logger boilerplate
 logger = logging.getLogger(__name__)

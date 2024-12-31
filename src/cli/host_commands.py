@@ -1,5 +1,4 @@
 import logging
-from core.config_manager import initialize_api_connection
 import typer
 from typing_extensions import Annotated
 from enum import Enum
