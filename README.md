@@ -32,12 +32,12 @@ ESXi Testing Toolkit is a command-line utility designed to help security teams t
 <talk about methods of execution and modules here>
 
 
-# Installation
+## Installation
 Clone the repository and follow one of the supported installation methods.
 ```
 git clone https://github.com/AlbinoGazelle/esxi-testing-toolkit.git
 ```
-## pipx (Recommended)
+### pipx (Recommended)
 
 Install pipx with the following command.
 ```
@@ -53,7 +53,7 @@ esxi-testing-toolkit --install-completion
 ```
 Restart shell for command completion.
 
-## pip
+### pip
 ```
 cd esxi-testing-toolkit
 pip install .
@@ -61,7 +61,7 @@ esxi-testing-toolkit --install-completion
 ```
 Restart shell for command completion.
 
-### Tests
+#### Tests
 
 After [installing](#installation) the toolkit run the following command to view all available tests, their dependencies, and [MITRE ATT&CK](https://attack.mitre.org/) mappings.
 
@@ -69,10 +69,10 @@ After [installing](#installation) the toolkit run the following command to view 
 esxi-testing-toolkit base list --all
 ```
 
-## Setup
+### Setup
 In order to connect to an ESXi system, the toolkit requires credentials for a valid administrator account. This can be provided in two ways. 
 
-### .env File
+#### .env File
 The toolkit first checks for valid credentials in the form of a `.env` file located in the root directory of the project `esxi-testing-toolkit/.env`. Create the file using:
 ```
 cd esxi-testing-toolkit
@@ -88,33 +88,33 @@ ESXI_PASSWORD="PASSWORD"
 ESXI_HOST = "ESXI_SERVER_IP_ADDRESS"
 ```
 
-### Environmental Variables
+#### Environmental Variables
 If the toolkit cannot find a `.env` file, it will check the systems environmental variables next. The variable names are `$ESXI_USERNAME`, `$ESXI_PASSWORD`, and `$ESXI_HOST`.
 
 You can set these variables with the following commands:
 
-#### Linux
+##### Linux
 ```
 export ESXI_USERNAME="ESXI_USERNAME"
 export ESXI_PASSWORD="ESXI_PASSWORD"
 export ESXI_HOST="ESXI_HOST"
 ```
-#### Windows
+##### Windows
 ```
 set ESXI_USERNAME="ESXI_USERNAME"
 set ESXI_PASSWORD="ESXI_PASSWORD"
 set ESXI_HOST="ESXI_HOST"
 ```
 
-# Usage
+## Usage
 
-# Detections
+## Detections
 <link to medium blogpost about ESXi detection engineering>
 <link to detections/ folder>
 
-# Contribute
+## Contribute
 
-# Legal
+## Legal
 This tool has the ability to perform destructive actions against ESXi environments. The author has taken neccessary steps, including releasing relevant detections that alert on this tools usage, to help prevent abuse by malicious actors. Please ensure you have permissions from system owners before executing this tool. 
 
 All opinions and content represent the author and not their employer.
