@@ -3,6 +3,8 @@ import typer
 import requests
 import logging
 # import core components
+import cli.base_commands
+import cli.host_commands
 from core.connection import ESXiConnection
 from core.config_manager import retrieve_secrets
 import core.config_manager
@@ -22,9 +24,11 @@ logging.basicConfig(level=logging.INFO,format=FORMAT)
 
 # typer boilerplate
 app = typer.Typer()
+
 # add commands from cli/vm_commands into the app
 app.add_typer(cli.vm_commands.app, name="vm", help="Perform actions on Virtual Machines: delete_vm_snapshots | power_off_vm")
-
+app.add_typer(cli.host_commands.app, name="host", help="Performs actions on the ESXi host.")
+app.add_typer(cli.base_commands.app, name="base", help="Display information about available tests")
 # app entrypoint
 def main():
     app()
