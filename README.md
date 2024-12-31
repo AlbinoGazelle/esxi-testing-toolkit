@@ -32,15 +32,6 @@ ESXi Testing Toolkit is a command-line utility designed to help security teams t
 <talk about methods of execution and modules here>
 
 
-### Tests
-
-After [installing](#installation) the toolkit run the following command to view all available tests, their dependencies, and [MITRE ATT&CK](https://attack.mitre.org/) mappings.
-
-```
-esxi-testing-toolkit base list --all
-```
-
-
 # Installation
 Clone the repository and follow one of the supported installation methods.
 ```
@@ -69,6 +60,14 @@ pip install .
 esxi-testing-toolkit --install-completion
 ```
 Restart shell for command completion.
+
+### Tests
+
+After [installing](#installation) the toolkit run the following command to view all available tests, their dependencies, and [MITRE ATT&CK](https://attack.mitre.org/) mappings.
+
+```
+esxi-testing-toolkit base list --all
+```
 
 ## Setup
 In order to connect to an ESXi system, the toolkit requires credentials for a valid administrator account. This can be provided in two ways. 
