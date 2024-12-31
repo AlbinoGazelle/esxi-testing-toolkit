@@ -10,6 +10,8 @@
     ·
     <a href="#installation">Install</a>
     ·
+    <a href="#setup">Setup</a>
+    ·
     <a href="#usage">Usage</a>
     ·
     <a href="#detections">Detections</a>
@@ -35,7 +37,7 @@ ESXi Testing Toolkit is a command-line utility designed to help security teams t
 After [installing](#installation) the toolkit run the following command to view all available tests, their dependencies, and [MITRE ATT&CK](https://attack.mitre.org/) mappings.
 
 ```
-esxi-testing-toolkit list all
+esxi-testing-toolkit base list --all
 ```
 
 
