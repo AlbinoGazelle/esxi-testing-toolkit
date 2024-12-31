@@ -16,7 +16,6 @@ class ExecutionChoice(str, Enum):
 # typer boilerplate
 app = typer.Typer()
 
-
 @command_metadata(module=['vm'], dependencies=['Virtual Machine with Snapshots'], mitre_attack=['T1485'], tags=['volatile', 'destructive'], methods=['API', 'SSH'])
 @app.command()
 def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
@@ -33,8 +32,8 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
         logging.info(f"Task {request['soapenv:Envelope']['soapenv:Body']['RemoveAllSnapshots_TaskResponse']['returnval']['#text']} successful. All snapshots for VM {vm_id} have been deleted.")
         # get hostd logs via SSH here if verbose is enabled
         if verbose:
-            logs = connection.retrieve_log('/var/log/hostd.log')
-            logging.info(logs)
+            ssh_connection = initialize_ssh_connection()
+            ssh_connection.retrieve_log('/var/log/hostd.log')
     elif method.value == "ssh":
         # init SSH connection to ESXi host
         connection = initialize_ssh_connection()
@@ -51,17 +50,33 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
             logging.info(f'SSH command {command} executed successfully.')
             # get shell.log logs here if erbose is enabled
             if verbose:
-                logs = connection.retrieve_log('/var/log/shell.log')
+                connection.retrieve_log('/var/log/shell.log')
+                
 @command_metadata(module=['vm'], dependencies=['Powered On Virtual Machine'], mitre_attack=['T1529'], tags=['volatile'], methods=['API', 'SSH'])
 @app.command()
-def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
+def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Powers off a VM. 
     Example: esxi-testing-toolkit vm power-off-vm 1 api
     """
     if method.value == "api":
-        logging.info(f'Power off VM command is not yet supported! {vm_id}|{method.value}')
-        raise NotImplementedError
+        connection = initialize_api_connection()
+        logging.info(f'Sending API request to power off vm: {vm_id}')
+        payload = f"""<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-d3</operationID></Header><Body><PowerOffVM_Task xmlns="urn:vim25"><_this type="VirtualMachine">{vm_id}</_this></PowerOffVM_Task></Body></Envelope>"""
+        request = connection.send_request(payload=payload)
+        logging.info(request)
+        logging.info(f"Task {request['soapenv:Envelope']['soapenv:Body']['PowerOffVM_TaskResponse']['returnval']['#text']} successful. VM {vm_id} has been sent a power off signal.")
+        if verbose:
+            ssh_connection = initialize_ssh_connection()
+            ssh_connection.retrieve_log('/var/log/hostd.log')
     else:
-        logging.info(f'Power off VM command is not yet supported! {vm_id}|{method.value}')
-        raise NotImplementedError
+        connection = initialize_ssh_connection()
+        command = f'vim-cmd vmsvc/power.off {vm_id}'
+        command_output = connection.send_ssh_command(command)
+        if "vim.fault.InvalidPowerState" in command_output:
+            logging.error(command_output)
+            logging.error(f'VM id {vm_id} has an invalid state to be shutdown. Examine the output above for remediation.')
+        else:
+            logging.info(f'SSH command {command} executed successfully.')
+            if verbose:
+                connection.retrieve_log('/var/log/shell.log')
