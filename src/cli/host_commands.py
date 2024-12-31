@@ -3,7 +3,7 @@ from core.config_manager import initialize_api_connection
 import typer
 from typing_extensions import Annotated
 from enum import Enum
-
+from core.command_metadata import command_metadata
 
 class ExecutionChoice(str, Enum):
     """
@@ -16,6 +16,7 @@ class ExecutionChoice(str, Enum):
 # typer boilerplate
 app = typer.Typer()
 
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1529'], tags=['benign'], methods=['API', 'SSH'])
 @app.command()
 def disable_autostart(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
     """
@@ -28,7 +29,8 @@ def disable_autostart(method: Annotated[ExecutionChoice, typer.Argument(case_sen
     else:
         logging.error('Disable ESXi Host autostart is not yet supported via SSH!')
         raise NotImplementedError
-
+    
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1021.004'], tags=['benign'], methods=['API', 'SSH'])
 @app.command()
 def enable_ssh(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
     """
@@ -40,6 +42,7 @@ def enable_ssh(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=
         logging.error(f'Enabling SSH access is not yet supported via {method.value}!')
         raise NotImplementedError
     
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], tags=['benign'], methods=['API', 'SSH'])
 @app.command()
 def get_all_vm_ids(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
     """
