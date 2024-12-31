@@ -3,7 +3,7 @@ from core.config_manager import initialize_api_connection, initialize_ssh_connec
 import typer
 from typing_extensions import Annotated
 from enum import Enum
-
+from core.command_metadata import command_metadata
 class ExecutionChoice(str, Enum):
     """
     Enum for different methods of executing commands.
@@ -15,6 +15,8 @@ class ExecutionChoice(str, Enum):
 # typer boilerplate
 app = typer.Typer()
 
+
+@command_metadata(module=['vm'], dependencies=['Virtual Machine with Snapshots'], mitre_attack=['T1485'], tags=['volatile', 'destructive'], methods=['API', 'SSH'])
 @app.command()
 def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
@@ -49,6 +51,7 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
             # get shell.log logs here if erbose is enabled
             if verbose:
                 logs = connection.retrieve_log('/var/log/shell.log')
+@command_metadata(module=['vm'], dependencies=['Powered On Virtual Machine'], mitre_attack=['T1529'], tags=['volatile'], methods=['API', 'SSH'])
 @app.command()
 def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api"):
     """
