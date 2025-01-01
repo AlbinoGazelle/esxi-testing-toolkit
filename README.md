@@ -115,6 +115,6 @@ set ESXI_HOST="ESXI_HOST"
 ## Contribute
 
 ## Legal
-This tool has the ability to perform destructive actions against ESXi environments. The author has taken neccessary steps, including releasing relevant detections that alert on this tools usage, to help prevent abuse by malicious actors. Please ensure you have permissions from system owners before executing this tool. 
+This tool has the ability to perform destructive actions against ESXi environments. The author has taken necessary steps, including releasing relevant detections that alert on this tools usage, to help prevent abuse by malicious actors. Please ensure you have permissions from system owners before executing this tool. 
 
 All opinions and content represent the author and not their employer.
