@@ -126,7 +126,6 @@ class ESXiConnection:
                 verify=self.verify_ssh
             )
             response.raise_for_status()
-            logging.info(f'Successfully sent request.')
             return xmltodict.parse(response.text)
         except requests.exceptions.ConnectionError as e:
             logging.error(f'Could not connect to ESXi host. Ensure the system is reachable and try again: {str(e)}')
