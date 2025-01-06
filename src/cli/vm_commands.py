@@ -18,10 +18,10 @@ app = typer.Typer()
 
 @command_metadata(module=['vm'], dependencies=['Virtual Machine with Snapshots'], mitre_attack=['T1485'], tags=['volatile', 'destructive'], methods=['API', 'SSH'])
 @app.command()
-def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def delete_vm_snapshots(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Deletes all snapshots for a given virtual machine.
-    Example: esxi-testing-toolkit vm delete-vm-snapshots 1 ssh
+    Example: esxi-testing-toolkit vm delete-vm-snapshots --vm-id=1 --method=ssh
     """
     if method.value == "api":
         connection = initialize_api_connection()
@@ -54,7 +54,7 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Argument(help="Virtual Machi
                 
 @command_metadata(module=['vm'], dependencies=['Powered On Virtual Machine'], mitre_attack=['T1529'], tags=['volatile'], methods=['API', 'SSH'])
 @app.command()
-def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def power_off_vm(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Powers off a VM. 
     Example: esxi-testing-toolkit vm power-off-vm 1 api
@@ -64,7 +64,6 @@ def power_off_vm(vm_id: Annotated[str, typer.Argument(help="Virtual Machine ID")
         logging.info(f'Sending API request to power off vm: {vm_id}')
         payload = f"""<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-d3</operationID></Header><Body><PowerOffVM_Task xmlns="urn:vim25"><_this type="VirtualMachine">{vm_id}</_this></PowerOffVM_Task></Body></Envelope>"""
         request = connection.send_request(payload=payload)
-        logging.info(request)
         logging.info(f"Task {request['soapenv:Envelope']['soapenv:Body']['PowerOffVM_TaskResponse']['returnval']['#text']} successful. VM {vm_id} has been sent a power off signal.")
         if verbose:
             ssh_connection = initialize_ssh_connection()

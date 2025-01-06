@@ -18,7 +18,7 @@ app = typer.Typer()
 
 @command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1529'], tags=['benign'], methods=['API', 'SSH'])
 @app.command()
-def disable_autostart(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def disable_autostart(method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Disables Autostart of VMs on the ESXi Host
     """
@@ -43,7 +43,7 @@ def disable_autostart(method: Annotated[ExecutionChoice, typer.Argument(case_sen
     
 @command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1021.004'], tags=['benign'], methods=['API', 'SSH'])
 @app.command()
-def enable_ssh(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def enable_ssh(method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Enables SSH access on the ESXi Host
     """
@@ -52,7 +52,7 @@ def enable_ssh(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=
         logging.info('Sending API request to enable SSH access.')
         payload = """<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-85b0</operationID></Header><Body><StartService xmlns="urn:vim25"><_this type="HostServiceSystem">serviceSystem</_this><id>TSM-SSH</id></StartService></Body></Envelope>"""
         request = connection.send_request(payload=payload)
-        logging.info(request)
+        logging.info('Successfully sent request to enable SSH access')
     else:
         connection = initialize_ssh_connection()
         logging.warning('vim-cmd does NOT indicate if following command was successful or not. Verify manually via the ESXi web interface or by attempting an SSH connection.')
@@ -63,7 +63,7 @@ def enable_ssh(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=
     
 @command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], tags=['benign'], methods=['API', 'SSH'])
 @app.command()
-def get_all_vm_ids(method: Annotated[ExecutionChoice, typer.Argument(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def get_all_vm_ids(method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Returns a list of VM ids present on the ESXi Host
     """
