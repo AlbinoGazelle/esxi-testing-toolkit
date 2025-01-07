@@ -4,9 +4,23 @@ import os
 from dotenv import dotenv_values
 import logging
 from core.connection import ESXiConnection
-
+from enum import Enum
 # logger boilerplate
 logger = logging.getLogger(__name__)
+
+class ExecutionChoice(str, Enum):
+    """
+    Enum for different methods of executing commands.
+    Required for showing default values in Typer command.
+    """
+    ssh = "ssh"
+    api = "api"
+class UtilityChoice(str, Enum):
+    """
+    Enum for different utilities for SSH commands
+    """
+    esxcli = "esxcli"
+    vimcmd = "vim-cmd"
 
 def initialize_api_connection():
     """
