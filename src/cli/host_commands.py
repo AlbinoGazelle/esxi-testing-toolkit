@@ -1,28 +1,19 @@
 import logging
 import typer
 from typing_extensions import Annotated
-from enum import Enum
 from core.command_metadata import command_metadata
-from core.config_manager import initialize_api_connection, initialize_ssh_connection
+from core.config_manager import initialize_api_connection, initialize_ssh_connection, ExecutionChoice, UtilityChoice
 from tabulate import tabulate
-class ExecutionChoice(str, Enum):
-    """
-    Enum for different methods of executing commands.
-    Required for showing default values in Typer command.
-    """
-    ssh = "ssh"
-    api = "api"
-
+    
 # typer boilerplate
 app = typer.Typer()
 
-@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1529'], tags=['benign'], methods=['API', 'SSH'])
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1529'], tags=['benign'], methods=['API', 'SSH'], utilities=["vim-cmd"])
 @app.command()
 def disable_autostart(method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Disables Autostart of VMs on the ESXi Host
     """
-    
     if method.value == "api":
         connection = initialize_api_connection()
         logging.info(f'Sending API request to disable VM autostart')
@@ -41,7 +32,7 @@ def disable_autostart(method: Annotated[ExecutionChoice, typer.Option(case_sensi
             if verbose:
                 connection.retrieve_log('/var/log/shell.log')
     
-@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1021.004'], tags=['benign'], methods=['API', 'SSH'])
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1021.004'], tags=['benign'], methods=['API', 'SSH'], utilities=["vim-cmd"])
 @app.command()
 def enable_ssh(method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
@@ -61,9 +52,9 @@ def enable_ssh(method: Annotated[ExecutionChoice, typer.Option(case_sensitive=Fa
         if verbose:
             connection.retrieve_log('/var/log/shell.log')
     
-@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], tags=['benign'], methods=['API', 'SSH'])
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], tags=['benign'], methods=['API', 'SSH'], utilities=["vim-cmd", "esxcli"])
 @app.command()
-def get_all_vm_ids(method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def get_all_vm_ids(utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd", method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api",  verbose: bool = False):
     """
     Returns a list of VM ids present on the ESXi Host
     """
@@ -79,7 +70,7 @@ def get_all_vm_ids(method: Annotated[ExecutionChoice, typer.Option(case_sensitiv
             request = [request["soapenv:Envelope"]["soapenv:Body"]["RetrievePropertiesExResponse"]["returnval"]["objects"]["propSet"]["val"]["ManagedObjectReference"]]
         else:
             request = request["soapenv:Envelope"]["soapenv:Body"]["RetrievePropertiesExResponse"]["returnval"]["objects"]["propSet"]["val"]["ManagedObjectReference"]
-            
+        # get information on each VM with another API call
         for vm_id in request:
             id = vm_id["#text"]
             payload = f"""<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-7770</operationID></Header><Body><RetrievePropertiesEx xmlns="urn:vim25"><_this type="PropertyCollector">ha-property-collector</_this><specSet><propSet><type>VirtualMachine</type><all>false</all><pathSet>name</pathSet><pathSet>config</pathSet><pathSet>configIssue</pathSet><pathSet>datastore</pathSet><pathSet>guest</pathSet><pathSet>runtime</pathSet><pathSet>summary.storage</pathSet><pathSet>summary.runtime</pathSet><pathSet>summary.quickStats</pathSet><pathSet>layoutEx</pathSet><pathSet>snapshot</pathSet><pathSet>effectiveRole</pathSet></propSet><objectSet><obj type="VirtualMachine">{id}</obj><skip>false</skip></objectSet></specSet><options/></RetrievePropertiesEx></Body></Envelope>"""
@@ -89,5 +80,59 @@ def get_all_vm_ids(method: Annotated[ExecutionChoice, typer.Option(case_sensitiv
             file = request['soapenv:Envelope']['soapenv:Body']['RetrievePropertiesExResponse']['returnval']['objects']['propSet'][0]['val']['files']['vmPathName']
             vm_ids.append({'id': id, 'name': name, 'os_name': os_name, 'file': file})
         print(tabulate(vm_ids, headers={'id': 'Virtual Machine ID', 'name': 'Virtual Machine Name', 'os_name': 'Operating System', 'file': 'File Path'}, numalign="left"))
-    
+    elif method.value == "ssh":
+        connection = initialize_ssh_connection()
+        if utility.value == "vim-cmd":
+            command = "vim-cmd vmsvc/getallvms"
+        elif utility.value == "esxcli":
+            logging.info("ESXCLI can only enumerate running VMs. Use vim-cmd or the API to enumerate both running and non-running.")
+            command = "esxcli --formatter=csv --format-param=fields==\"WorldID,DisplayName\" vm process list"
+        output = connection.send_ssh_command(command)
+        print(output)
+        if verbose:
+            connection.retrieve_log('/var/log/shell.log')
+
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], tags=['benign'], methods=['API', 'SSH'], utilities=["vim-cmd", "esxcli"])
+@app.command()
+def get_system_info(utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd", method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api",  verbose: bool = False):
+    """
+    Displays information on the ESXi Host.
+    """
+    logging.info("Retrieving information on the ESXi host. Information may vary depending on execution method and utility.")
+    if method.value == "ssh":
+        connection = initialize_ssh_connection()
+        if utility.value == "esxcli":
+            command = "esxcli system version get\resxcli system hostname get"
+            print(connection.send_ssh_command(command))
+        elif utility.value == "vim-cmd":
+            command = "vim-cmd hostsvc/hostsummary"
+            print(connection.send_ssh_command(command))
+        if verbose:
+            connection.retrieve_log('/bin/vim-cmd')
+    else:
+        logging.error(f"Retrieving system information via {method.value} is not yet supported!")
+        raise SystemExit()
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], tags=['benign'], methods=['API', 'SSH'], utilities=["esxcli"])
+@app.command()
+def get_system_users(utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "esxcli", method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api",  verbose: bool = False):
+    """
+    Displays a list of users on the ESXi Host.
+    """
+    if method.value == "api":
+        logging.info("Using ESXi API to retrieve a list of ESXi users.")
+        connection = initialize_api_connection()
+        payload = """<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-a178</operationID></Header><Body><RetrieveUserGroups xmlns="urn:vim25"><_this type="UserDirectory">ha-user-directory</_this><searchStr></searchStr><exactMatch>false</exactMatch><findUsers>true</findUsers><findGroups>true</findGroups></RetrieveUserGroups></Body></Envelope>"""
+        response = connection.send_request(payload=payload)
+        users = response['soapenv:Envelope']['soapenv:Body']['RetrieveUserGroupsResponse']['returnval']
+        for user in users:
+            del user['@xsi:type']
+        print(tabulate(users, headers={'principal': 'username', 'fullName': 'name', 'shellAccess': 'Shell Access', 'id': 'id', 'group': 'group'}))
+    elif method.value == "ssh":
+        connection = initialize_ssh_connection()
+        if utility.value == "esxcli":
+            command = "esxcli system account list"
+        else:
+            logging.error(f"Retrieving the list of ESXi users via {utility.value} is not yet supported!")
+            raise SystemExit()
+        print(connection.send_ssh_command(command))
         
