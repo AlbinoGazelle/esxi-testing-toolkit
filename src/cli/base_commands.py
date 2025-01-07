@@ -20,8 +20,8 @@ def list(module: str = typer.Option(default=None), all: bool = False, mitre: str
         List all tests for the Host module: esxi-testing-toolkit base list --module host\n
     """
     # define print order and header names
-    print_order = ['name', 'dependencies', 'module', 'mitre_attack', 'methods', 'tags']
-    headers = {'name':'name', 'tags': 'tags', 'dependencies': 'dependencies', 'mitre_attack': 'MITRE ATT&CK', 'method': 'execution methods', 'module': 'module'}
+    print_order = ['name', 'dependencies', 'module', 'mitre_attack', 'methods', 'tags', 'utilities']
+    headers = {'name':'name', 'tags': 'tags', 'dependencies': 'dependencies', 'mitre_attack': 'MITRE ATT&CK', 'method': 'execution methods', 'module': 'module', 'utilities': 'utilities'}
     data = []
     if module:
         if module == 'vm':
