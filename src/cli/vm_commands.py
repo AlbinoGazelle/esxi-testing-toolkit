@@ -1,5 +1,5 @@
 import logging
-from core.config_manager import initialize_api_connection, initialize_ssh_connection
+from core.config_manager import initialize_api_connection, initialize_ssh_connection, ExecutionChoice, UtilityChoice
 import typer
 from typing_extensions import Annotated
 from enum import Enum
@@ -16,9 +16,9 @@ class ExecutionChoice(str, Enum):
 # typer boilerplate
 app = typer.Typer()
 
-@command_metadata(module=['vm'], dependencies=['Virtual Machine with Snapshots'], mitre_attack=['T1485'], tags=['volatile', 'destructive'], methods=['API', 'SSH'])
+@command_metadata(module=['vm'], dependencies=['Virtual Machine with Snapshots'], mitre_attack=['T1485'], tags=['volatile', 'destructive'], methods=['API', 'SSH'], utilities=["vim-cmd"])
 @app.command()
-def delete_vm_snapshots(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def delete_vm_snapshots(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd",  method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Deletes all snapshots for a given virtual machine.
     Example: esxi-testing-toolkit vm delete-vm-snapshots --vm-id=1 --method=ssh
@@ -52,12 +52,12 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Option(help="Virtual Machine
             if verbose:
                 connection.retrieve_log('/var/log/shell.log')
                 
-@command_metadata(module=['vm'], dependencies=['Powered On Virtual Machine'], mitre_attack=['T1529'], tags=['volatile'], methods=['API', 'SSH'])
+@command_metadata(module=['vm'], dependencies=['Powered On Virtual Machine'], mitre_attack=['T1529'], tags=['volatile'], methods=['API', 'SSH'], utilities=["vim-cmd"])
 @app.command()
-def power_off_vm(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
+def power_off_vm(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd",  method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
     Powers off a VM. 
-    Example: esxi-testing-toolkit vm power-off-vm 1 api
+    Example: esxi-testing-toolkit vm power-off-vm --vm-id=1 --method=ssh --verbose
     """
     if method.value == "api":
         connection = initialize_api_connection()
@@ -70,7 +70,10 @@ def power_off_vm(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")],
             ssh_connection.retrieve_log('/var/log/hostd.log')
     else:
         connection = initialize_ssh_connection()
-        command = f'vim-cmd vmsvc/power.off {vm_id}'
+        if utility.value == "vim-cmd":
+            command = f'vim-cmd vmsvc/power.off {vm_id}'
+        else:
+            raise NotImplementedError
         command_output = connection.send_ssh_command(command)
         if "vim.fault.InvalidPowerState" in command_output:
             logging.error(command_output)
