@@ -33,7 +33,7 @@ def initialize_api_connection():
     secrets = retrieve_secrets()
     
     # Attempt connection to ESXi host using information in env/.env
-    logging.info(f'Attempting to connect to {secrets['host']} as {secrets['username']}')
+    logging.info(f'Attempting to connect to {secrets["host"]} as {secrets["username"]}')
     connection = ESXiConnection(host=secrets['host'],username=secrets['username'],password=secrets['password'],verify_ssl=False)
     connection.connect_api()
     # push connection to config manager to allow shared use between modules
@@ -50,7 +50,7 @@ def initialize_ssh_connection():
     secrets = retrieve_secrets()
     
     # Attempt connection to ESXi host using information in env/.env
-    logging.info(f'Attempting to connect to {secrets['host']} as {secrets['username']} via SSH')
+    logging.info(f'Attempting to connect to {secrets["host"]} as {secrets["username"]} via SSH')
     connection = ESXiConnection(host=secrets['host'],username=secrets['username'],password=secrets['password'],verify_ssl=False)
     connection.connect_ssh()
     return connection
