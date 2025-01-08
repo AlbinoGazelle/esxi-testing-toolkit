@@ -1,0 +1,6 @@
+typer
+xmltodict
+requests
+python-dotenv
+paramiko
+tabulate
