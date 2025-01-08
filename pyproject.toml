@@ -24,7 +24,7 @@ keywords = ["security", "esxi", "infosec", "security-tools", "threat-detection",
 Repository = "https://github.com/AlbinoGazelle/esxi-testing-toolkit.git"
 
 [project.scripts]
-esxi-testing-toolkit = "esxi_testing_toolkit.main:main"
+esxi-testing-toolkit = "esxi_testing_toolkit.__main__:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]
