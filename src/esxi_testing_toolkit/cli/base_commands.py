@@ -39,7 +39,7 @@ def list(module: str = typer.Option(default=None), all: bool = False, mitre: str
                 pretty_data = {k: command_metadata[k] for k in print_order}
                 data.append(pretty_data)
     elif mitre:
-        commands = get_commands_by_mitre(mitre_attack=mitre.upper(), module=esxi_testing_toolkit.cli.host_commands) + get_commands_by_mitre(mitre_attack=mitre.upper(), module=cli.vm_commands)
+        commands = get_commands_by_mitre(mitre_attack=mitre.upper(), module=esxi_testing_toolkit.cli.host_commands) + get_commands_by_mitre(mitre_attack=mitre.upper(), module=esxi_testing_toolkit.cli.vm_commands)
         for func in commands:
             command_metadata = get_command_metadata(func=func)
             command_metadata.update({'name': func.__name__.replace("_", "-")})
@@ -47,7 +47,7 @@ def list(module: str = typer.Option(default=None), all: bool = False, mitre: str
             data.append(pretty_data)
     elif all:
         # get all commands in both modules
-        commands = get_commands_by_module(tag='vm', module=esxi_testing_toolkit.cli.vm_commands) + get_commands_by_module(tag='host', module=cli.host_commands)
+        commands = get_commands_by_module(tag='vm', module=esxi_testing_toolkit.cli.vm_commands) + get_commands_by_module(tag='host', module=esxi_testing_toolkit.cli.host_commands)
         for func in commands:
             command_metadata = get_command_metadata(func=func)
             command_metadata.update({'name': func.__name__.replace("_", "-")})
