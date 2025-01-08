@@ -139,8 +139,8 @@ For example, to delete all of the snapshots associated with a VM using `vim-cmd`
 ```
 esxi-testing-toolkit vm delete-vm-snapshots --vm-id=1 --method=ssh
 ```
-[!NOTE]  
-I must include `--method=ssh` because the default value is `api`. `--utility=vim-cmd` can be omitted as it's the default utility for this test.
+>[!NOTE]  
+>I must include `--method=ssh` because the default value is `api`. `--utility=vim-cmd` can be omitted as it's the default utility for this test.
 
 
 ## Detections
