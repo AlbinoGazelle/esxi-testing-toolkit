@@ -20,7 +20,7 @@
   </p>
 </p>
 
-<gif of toolkit running delete snapshots>
+![gif of exsi toolkit running delete vm snapshot](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/delete_vm.gif)
 
 >[!CAUTION]  
 >ESXi-Testing-Toolkit can modify your ESXi environment to a potentially undesirable state. Please take precautions and only execute it against test environments.
@@ -140,10 +140,10 @@ For example, to delete all of the snapshots associated with a VM using `vim-cmd`
 esxi-testing-toolkit vm delete-vm-snapshots --vm-id=1 --method=ssh
 ```
 >[!NOTE]  
->I must include `--method=ssh` because the default value is `api`. `--utility=vim-cmd` can be omitted as it's the default utility for this test.
+>I must include `--method=ssh` because the default value for this test is `api`. Specifying the utlity with `--utility=vim-cmd` can be omitted as it's the default utility for this test.
 
 
-## Detections
+## Research & Detections
 In order to limit the potential impact of releasing this tool publicly, I've published a blog post outlining how to detect most of the techniques included in ESXI Testing Toolkit.
 
 In addition to the blogpost I've also created Sigma rules for each test included in the toolkit. These tests can be found in the `/detections` folder of this repository. 
