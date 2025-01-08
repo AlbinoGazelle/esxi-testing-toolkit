@@ -23,7 +23,7 @@ def command_metadata(
         
         # Store metadata in function attributes
         wrapper.__metadata__ = {
-            'tags': tags or [],
+            'risk_level': tags or [],
             'dependencies': dependencies or [],
             'mitre_attack': mitre_attack or [],
             **kwargs
