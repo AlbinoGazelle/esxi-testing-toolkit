@@ -20,29 +20,29 @@ def list(module: str = typer.Option(default=None), all: bool = False, mitre: str
         List all tests for the Host module: esxi-testing-toolkit base list --module host\n
     """
     # define print order and header names
-    print_order = ['name', 'dependencies', 'module', 'mitre_attack', 'methods', 'tags', 'utilities']
-    headers = {'name':'name', 'tags': 'tags', 'dependencies': 'dependencies', 'mitre_attack': 'MITRE ATT&CK', 'method': 'execution methods', 'module': 'module', 'utilities': 'utilities'}
+    print_order = ['name', 'dependencies', 'module', 'mitre_attack', 'methods', 'risk_level', 'utilities', 'cleanup']
+    headers = {'name':'name', 'risk_level': 'risk level', 'dependencies': 'dependencies', 'mitre_attack': 'MITRE ATT&CK', 'method': 'execution methods', 'module': 'module', 'utilities': 'utilities', 'cleanup': 'clean up command'}
     data = []
     if module:
         if module == 'vm':
             commands = get_commands_by_module(tag=module, module=cli.vm_commands)
             for func in commands:
                 command_metadata = get_command_metadata(func=func)
-                command_metadata.update({'name': func.__name__})
+                command_metadata.update({'name': func.__name__.replace("_", "-")})
                 pretty_data = {k: command_metadata[k] for k in print_order}
                 data.append(pretty_data)
         elif module == 'host':
             commands = get_commands_by_module(tag=module, module=cli.host_commands)
             for func in commands:
                 command_metadata = get_command_metadata(func=func)
-                command_metadata.update({'name': func.__name__})
+                command_metadata.update({'name': func.__name__.replace("_", "-")})
                 pretty_data = {k: command_metadata[k] for k in print_order}
                 data.append(pretty_data)
     elif mitre:
         commands = get_commands_by_mitre(mitre_attack=mitre.upper(), module=cli.host_commands) + get_commands_by_mitre(mitre_attack=mitre.upper(), module=cli.vm_commands)
         for func in commands:
             command_metadata = get_command_metadata(func=func)
-            command_metadata.update({'name': func.__name__})
+            command_metadata.update({'name': func.__name__.replace("_", "-")})
             pretty_data = {k: command_metadata[k] for k in print_order}
             data.append(pretty_data)
     elif all:
@@ -50,8 +50,8 @@ def list(module: str = typer.Option(default=None), all: bool = False, mitre: str
         commands = get_commands_by_module(tag='vm', module=cli.vm_commands) + get_commands_by_module(tag='host', module=cli.host_commands)
         for func in commands:
             command_metadata = get_command_metadata(func=func)
-            command_metadata.update({'name': func.__name__})
+            command_metadata.update({'name': func.__name__.replace("_", "-")})
             pretty_data = {k: command_metadata[k] for k in print_order}
             data.append(pretty_data)
         
-    print(tabulate(data, headers=headers))
+    print(tabulate(data, headers=headers, tablefmt='grid'))
