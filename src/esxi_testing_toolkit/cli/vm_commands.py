@@ -1,5 +1,5 @@
 import logging
-from core.config_manager import initialize_api_connection, initialize_ssh_connection, ExecutionChoice, UtilityChoice
+from esxi_testing_toolkit.core.config_manager import initialize_api_connection, initialize_ssh_connection, ExecutionChoice, UtilityChoice
 import typer
 from typing_extensions import Annotated
 from enum import Enum

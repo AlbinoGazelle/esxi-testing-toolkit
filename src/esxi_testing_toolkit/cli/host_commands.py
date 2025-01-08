@@ -1,8 +1,8 @@
 import logging
 import typer
 from typing_extensions import Annotated
-from core.command_metadata import command_metadata
-from core.config_manager import initialize_api_connection, initialize_ssh_connection, ExecutionChoice, UtilityChoice
+from esxi_testing_toolkit.core.command_metadata import command_metadata
+from esxi_testing_toolkit.core.config_manager import initialize_api_connection, initialize_ssh_connection, ExecutionChoice, UtilityChoice
 from tabulate import tabulate
 import re
 # typer boilerplate

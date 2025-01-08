@@ -3,7 +3,7 @@
 import os
 from dotenv import dotenv_values
 import logging
-from core.connection import ESXiConnection
+from esxi_testing_toolkit.core.connection import ESXiConnection
 from enum import Enum
 # logger boilerplate
 logger = logging.getLogger(__name__)

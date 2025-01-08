@@ -8,7 +8,7 @@ import paramiko
 import time
 import xmltodict
 import os
-from core.authenticator import ESXiAuthenticator
+from esxi_testing_toolkit.core.authenticator import ESXiAuthenticator
 import uuid
 
 # logger boilerplate
