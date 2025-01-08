@@ -54,4 +54,4 @@ def list(module: str = typer.Option(default=None), all: bool = False, mitre: str
             pretty_data = {k: command_metadata[k] for k in print_order}
             data.append(pretty_data)
         
-    print(tabulate(data, headers=headers, tablefmt='grid'))
+    print(tabulate(data, headers=headers, tablefmt='github'))
