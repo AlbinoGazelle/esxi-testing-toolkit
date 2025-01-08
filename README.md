@@ -20,7 +20,7 @@
   </p>
 </p>
 
-![gif of exsi toolkit running delete vm snapshot](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/delete_vm.gif)
+![gif of exsi toolkit running delete vm snapshot](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/demo.gif)
 
 >[!CAUTION]  
 >ESXi-Testing-Toolkit can modify your ESXi environment to a potentially undesirable state. Please take precautions and only execute it against test environments.
