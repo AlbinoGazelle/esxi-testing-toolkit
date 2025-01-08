@@ -16,7 +16,7 @@ class ExecutionChoice(str, Enum):
 # typer boilerplate
 app = typer.Typer()
 
-@command_metadata(module=['vm'], dependencies=['Virtual Machine with Snapshots'], mitre_attack=['T1485'], tags=['volatile', 'destructive'], methods=['API', 'SSH'], utilities=["vim-cmd"])
+@command_metadata(module=['vm'], dependencies=['Virtual Machine with Snapshots'], mitre_attack=['T1485'], risk_level=['critical'], methods=['API', 'SSH'], utilities=["vim-cmd"], cleanup = ["none"])
 @app.command()
 def delete_vm_snapshots(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd",  method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
@@ -52,7 +52,7 @@ def delete_vm_snapshots(vm_id: Annotated[str, typer.Option(help="Virtual Machine
             if verbose:
                 connection.retrieve_log('/var/log/shell.log')
                 
-@command_metadata(module=['vm'], dependencies=['Powered On Virtual Machine'], mitre_attack=['T1529'], tags=['volatile'], methods=['API', 'SSH'], utilities=["vim-cmd"])
+@command_metadata(module=['vm'], dependencies=['Powered On Virtual Machine'], mitre_attack=['T1529'], risk_level=['medium'], methods=['API', 'SSH'], utilities=["vim-cmd"], cleanup = ["none"])
 @app.command()
 def power_off_vm(vm_id: Annotated[str, typer.Option(help="Virtual Machine ID")], utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd",  method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api", verbose: bool = False):
     """
