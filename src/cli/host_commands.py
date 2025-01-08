@@ -139,7 +139,7 @@ def get_all_vm_ids(utility: Annotated[UtilityChoice, typer.Option(help="Utility 
 
 @command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], risk_level=['low'], methods=['API', 'SSH'], utilities=["vim-cmd", "esxcli"], cleanup = ["none"])
 @app.command()
-def get_system_info(utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd", method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "api",  verbose: bool = False):
+def get_system_info(utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd", method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "ssh",  verbose: bool = False):
     """
     Displays information on the ESXi Host.
     """
@@ -422,7 +422,7 @@ def restrict_vib_acceptance_level(utility: Annotated[UtilityChoice, typer.Option
             if verbose:
                 connection.retrieve_log('/var/log/shell.log')
 
-@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1562.001'], risk_level=['critical'], methods=['SSH'], utilities=["esxcli"], cleanup = ["change-syslog-directory --path=/scratch/log"])
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1562.001'], risk_level=['critical'], methods=['SSH'], utilities=["esxcli"], cleanup = ["change-syslog-directory"])
 @app.command()
 def change_syslog_directory(path: Annotated[str, typer.Option(help="Path to change to the new Syslog directory.")], utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "esxcli", method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "ssh",  verbose: bool = False):
     """
