@@ -84,6 +84,7 @@ Restart shell for command completion.
 ```
 cd esxi-testing-toolkit
 pip install .
+export PATH="$HOME/.local/bin:$PATH" # ensure pip packages are accessible
 esxi-testing-toolkit --install-completion
 ```
 Restart shell for command completion.
