@@ -3,7 +3,7 @@ from esxi_testing_toolkit.core.config_manager import initialize_api_connection, 
 import typer
 from typing_extensions import Annotated
 from enum import Enum
-from core.command_metadata import command_metadata
+from esxi_testing_toolkit.core.command_metadata import command_metadata
 
 class ExecutionChoice(str, Enum):
     """
