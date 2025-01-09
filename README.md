@@ -32,16 +32,17 @@ ESXi Testing Toolkit is a command-line utility designed to help security teams t
 ## Features
 
 ### Diverse Test Suite
-ESXi Testing Toolkit supports 21 different tests across 8 different MITRE ATT&CK Techniques.
-<gif of running esxi-testing-toolkit base list --all>
+ESXi Testing Toolkit supports 21 different tests across 8 different MITRE ATT&CK Techniques. You can get a listing and filter through them with the `esxi-testing-toolkit base list` command.
+![gif of esxi testing toolkit running base list](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/list_command.gif)
+
 
 ### Execution Methods
 The testing toolkit currently supports two test execution methods, `SSH` and `API`.
 
-Changing the ESXi Welcome Message via SSH and ESXCLI.
+In this example, I'm changing the ESXi welcome message with ESXCLI over SSH.
 ![gif of esxi testing toolkit running change-welcome-message with esxcli via ssh](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/change_welcome_message.gif)
 
-Enumerating all ESXi users with the SOAP API.
+In this one, I'm enumerating a list of ESXi system users via the ESXi SOAP API.
 ![gif of esxi testing toolkit running get-system-users via API](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/get-users.gif)
 
 ### Multiple Utilities
