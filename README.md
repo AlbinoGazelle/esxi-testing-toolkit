@@ -60,35 +60,43 @@ For tests that can be executed via `SSH`, a utility value is assigned. This dete
 Some tests contain clean up commands that can be optionally executed after test execution to restore the system to a pre-test environment. These are noted in this field.
 
 ## Installation
-Clone the repository and follow one of the supported installation methods.
-```
-git clone https://github.com/AlbinoGazelle/esxi-testing-toolkit.git
-```
-### pipx (Recommended)
 
-Install pipx with the following command.
+![gif installing esxi-testing-toolkit with pipx](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/install.gif)
+
+You can install the toolkit from either GitHub or PyPI.
+
+>[!NOTE]  
+>I highly recommend using [pipx](https://github.com/pypa/pipx) to install and run the toolkit to prevent dependency conflicts. You can install it with the following commands.
+
 ```
 python3 -m pip install --user pipx
 python3 -m pipx ensurepath
 ```
 
-Use pipx to install esxi-testing-toolkit.
+### GitHub (recommended)
+
+Use pipx to install esxi-testing-toolkit from GitHub
 ```
-cd esxi-testing-toolkit
-pipx install .
-esxi-testing-toolkit --install-completion
+pipx install "git+https://github.com/AlbinoGazelle/esxi-testing-toolkit.git"
+esxi-testing-toolkit --install-completion #optional - adds shell completion
+```
+
+Alternatively, you can install with vanilla Python `pip` using
+```
+pip install "git+https://github.com/AlbinoGazelle/esxi-testing-toolkit.git"
+esxi-testing-toolkit --install-completion #optional - adds shell completion
+```
+
+### PyPI
+Installing from PyPI is similar to GitHub, but you'll miss out on any updates between major releases.
+```
+pipx install esxi-testing-toolkit
+```
+or
+```
+pip install esxi-testing-toolkit
 ```
 Restart shell for command completion.
-
-### pip
-```
-cd esxi-testing-toolkit
-pip install .
-export PATH="$HOME/.local/bin:$PATH" # ensure pip packages are accessible
-esxi-testing-toolkit --install-completion
-```
-Restart shell for command completion.
-
 ### Setup
 In order to connect to an ESXi system, the toolkit requires credentials for a valid administrator account. This can be provided in two ways. 
 
