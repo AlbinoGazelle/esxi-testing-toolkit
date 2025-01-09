@@ -29,7 +29,40 @@
 
 ESXi Testing Toolkit is a command-line utility designed to help security teams test detections deployed in ESXi environments. It takes heavy inspiration from [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) but provides ESXi-specific enhancements and a simpler user experience.
 
-Currently, ESXi Testing Toolkit contains **21** tests across **8** MITRE ATT&CK techniques. For a full list of commands, install the toolkit and run `esxi-testing-toolkit base list --all`.
+## Features
+
+### Diverse Test Suite
+ESXi Testing Toolkit supports 21 different tests across 8 different MITRE ATT&CK Techniques.
+<gif of running esxi-testing-toolkit base list --all>
+
+### Execution Methods
+The testing toolkit currently supports two test execution methods, `SSH` and `API`.
+
+Changing the ESXi Welcome Message via SSH and ESXCLI.
+![gif of esxi testing toolkit running change-welcome-message with esxcli via ssh](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/change_welcome_message.gif)
+
+Enumerating all ESXi users with the SOAP API.
+![gif of esxi testing toolkit running get-system-users via API](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/get-users.gif)
+
+### Multiple Utilities
+
+If the test can be executed with more than one built in utilities, ESXi Testing Toolkit gives you the option to choose with utility you'd like to use, allowing you to test how your detections perform depending on how they're executed.
+
+<Enumerating all VM IDs with ESXCLI>
+
+<Doing the same with VIM-CMD>
+
+### Verbose Mode
+To assist in detection development, the toolkit allows you to provide the `--verbose` command line option to all tests that will retrieve logs from the ESXi host depending on the test.
+
+<Deleting VM snapshots via API with verbose mode>
+
+<Powering off VM via SSH vim-cmd with verbose mode>
+
+
+
+<gif of esxi toolkit running disable vm autostart with vim-cmd>
+Currently, ESXi Testing Toolkit contains **21** tests across **8** MITRE ATT&CK techniques.
 
 ## Tests
 Tests are individual implementations of adversarial behavior relating to ESXi systems. In ESXi Testing Toolkit this can range from simply power off a virtual machine all the way to disabling the ESXi firewall.
@@ -62,8 +95,6 @@ Some tests contain clean up commands that can be optionally executed after test 
 ## Installation
 
 ![gif installing esxi-testing-toolkit with pipx](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/install.gif)
-
-You can install the toolkit from either GitHub or PyPI.
 
 >[!NOTE]  
 >I highly recommend using [pipx](https://github.com/pypa/pipx) to install and run the toolkit to prevent dependency conflicts. You can install it with the following commands.
