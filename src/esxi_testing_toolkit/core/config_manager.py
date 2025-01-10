@@ -66,7 +66,7 @@ def retrieve_secrets():
         logging.info(f"Reading credentials from {os.path.expanduser('~')}/.esxi-testing-toolkit/.env file")
         return retrieve_dotenv()
     else:
-        logging.info("No .env file found. Attempting to get secrets from environmental variables.")
+        logging.info(f"No {os.path.expanduser('~')}/.esxi-testing-toolkit/.env file found. Attempting to get secrets from environmental variables.")
         return retrieve_env_vars()
 
 def retrieve_dotenv():
