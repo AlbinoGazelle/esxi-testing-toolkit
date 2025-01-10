@@ -1,6 +1,6 @@
 [project]
 name = "esxi-testing-toolkit"
-version = "0.1.5"
+version = "0.1.8"
 description = "Simple and easy to use CLI tool to test ESXi detections."
 readme = "README.md"
 dependencies = [
