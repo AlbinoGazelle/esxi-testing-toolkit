@@ -56,10 +56,6 @@ To assist in detection development, the toolkit allows you to provide the `--ver
 
 <Deleting VM snapshots via API with verbose mode>
 
-
-<gif of esxi toolkit running disable vm autostart with vim-cmd>
-Currently, ESXi Testing Toolkit contains **21** tests across **8** MITRE ATT&CK techniques.
-
 ## Tests
 Tests are individual implementations of adversarial behavior relating to ESXi systems. In ESXi Testing Toolkit this can range from simply power off a virtual machine all the way to disabling the ESXi firewall.
 
