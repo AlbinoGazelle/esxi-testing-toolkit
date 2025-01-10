@@ -54,7 +54,7 @@ If the test can be executed with more than one built in utilities, ESXi Testing 
 ### Verbose Mode
 To assist in detection development, the toolkit allows you to provide the `--verbose` command line option to all tests that will retrieve logs from the ESXi host depending on the test.
 
-<Deleting VM snapshots via API with verbose mode>
+![gif of esxi testing toolkit running delete-all-vm-snapshots with --verbose](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/delete_snapshots_with_verbose.gif)
 
 ## Tests
 Tests are individual implementations of adversarial behavior relating to ESXi systems. In ESXi Testing Toolkit this can range from simply power off a virtual machine all the way to disabling the ESXi firewall.
