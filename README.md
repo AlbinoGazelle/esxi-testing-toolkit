@@ -47,19 +47,14 @@ In this one, I'm enumerating a list of ESXi system users via the ESXi SOAP API.
 
 ### Multiple Utilities
 
-If the test can be executed with more than one built in utilities, ESXi Testing Toolkit gives you the option to choose with utility you'd like to use, allowing you to test how your detections perform depending on how they're executed.
+If the test can be executed with more than one built in utilities, ESXi Testing Toolkit gives you the option to choose with utility you'd like to use with the `--utility` option. This allows you to test how your detections perform depending on how they're executed.
+![gif of esxi testing toolkit running list-all-vm-ids with esxcli and vim-cmd](https://github.com/AlbinoGazelle/esxi-testing-toolkit/raw/main/demo/list-all-vm.gif)
 
-<Enumerating all VM IDs with ESXCLI>
-
-<Doing the same with VIM-CMD>
 
 ### Verbose Mode
 To assist in detection development, the toolkit allows you to provide the `--verbose` command line option to all tests that will retrieve logs from the ESXi host depending on the test.
 
 <Deleting VM snapshots via API with verbose mode>
-
-<Powering off VM via SSH vim-cmd with verbose mode>
-
 
 
 <gif of esxi toolkit running disable vm autostart with vim-cmd>
