@@ -124,23 +124,23 @@ Restart shell for command completion.
 In order to connect to an ESXi system, the toolkit requires credentials for a valid administrator account. This can be provided in two ways. 
 
 #### .env File
-The toolkit first checks for valid credentials in the form of a `.env` file located in the root directory of the project `esxi-testing-toolkit/.env`. Create the file using:
-```
-cd esxi-testing-toolkit
-touch .env
-```
+The toolkit first checks for valid credentials in the form of a `.env` file located in `$HOME/.esxi-testing-toolkit/.env`. If this folder doesn't exist, it will be created upon the first execution of the toolkit. 
 
+Create the .env file with the following command:
+```
+touch ~/.esxi-testing-toolkit/.env
+```
 Populate the newly created file with three variables `ESXI_USERNAME`, `ESXI_PASSWORD`, and `ESXI_HOST`.
 
 ```
-# file: .env
+# file: ~/.esxi-testing-toolkit/.env
 ESXI_USERNAME="USERNAME"
 ESXI_PASSWORD="PASSWORD"
 ESXI_HOST = "ESXI_SERVER_IP_ADDRESS"
 ```
 
 #### Environmental Variables
-If the toolkit cannot find a `.env` file, it will check the systems environmental variables next. The variable names are `$ESXI_USERNAME`, `$ESXI_PASSWORD`, and `$ESXI_HOST`.
+If the toolkit cannot find the `.env` file, it will check the systems environmental variables next. The variable names are `$ESXI_USERNAME`, `$ESXI_PASSWORD`, and `$ESXI_HOST`.
 
 You can set these variables with the following commands:
 
