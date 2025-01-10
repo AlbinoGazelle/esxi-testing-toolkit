@@ -101,7 +101,7 @@ class ESXiConnection:
         logging.info(f'Retrieving {log_file} from ESXi host.')
         sftp = self.ssh_conn.open_sftp()
         filename = log_file.split('/')[-1]
-        local_path = f"{os.getcwd()}/logs/{self.guid}_{filename}"
+        local_path = f"{os.path.expanduser('~')}/.esxi-testing-toolkit/{self.guid}_{filename}"
         try:
             sftp.get(log_file, local_path)
         except FileNotFoundError as e:

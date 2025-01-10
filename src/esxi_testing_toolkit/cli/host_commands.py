@@ -153,7 +153,7 @@ def get_system_info(utility: Annotated[UtilityChoice, typer.Option(help="Utility
             command = "vim-cmd hostsvc/hostsummary"
             print(connection.send_ssh_command(command))
         if verbose:
-            connection.retrieve_log('/bin/vim-cmd')
+            connection.retrieve_log('/var/log/shell.log')
     else:
         logging.error(f"Retrieving system information via {method.value} is not yet supported!")
         raise SystemExit()

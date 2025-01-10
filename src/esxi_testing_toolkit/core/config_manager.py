@@ -62,8 +62,8 @@ def retrieve_secrets():
     :returns: username and password combination
     """
     # if we have a .env file try that first
-    if os.path.exists('.env'):
-        logging.info("Attempting to get secrets from .env file")
+    if os.path.exists(f"{os.path.expanduser('~')}/.esxi-testing-toolkit/.env"):
+        logging.info(f"Reading credentials from {os.path.expanduser('~')}/.esxi-testing-toolkit/.env file")
         return retrieve_dotenv()
     else:
         logging.info("No .env file found. Attempting to get secrets from environmental variables.")
@@ -76,7 +76,7 @@ def retrieve_dotenv():
     :returns: ESXI_USERNAME and ESXI_PASSWORD values in .env file.
     """
     try:
-        secrets = dotenv_values(".env")
+        secrets = dotenv_values(f"{os.path.expanduser('~')}/.esxi-testing-toolkit/.env")
         logging.info("Retrieved configuration information from .env file")
         return {'username': secrets['ESXI_USERNAME'], 'password': secrets['ESXI_PASSWORD'], "host": secrets['ESXI_HOST']}
     except Exception as e:

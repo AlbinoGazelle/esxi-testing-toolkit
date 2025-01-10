@@ -2,6 +2,7 @@
 import typer
 import requests
 import logging
+import os
 # import core components
 import esxi_testing_toolkit.cli.vm_commands
 import esxi_testing_toolkit.cli.host_commands
@@ -23,12 +24,19 @@ logging.basicConfig(level=logging.INFO,format=FORMAT)
 app = typer.Typer()
 
 # add commands from cli/vm_commands into the app
-app.add_typer(esxi_testing_toolkit.cli.vm_commands.app, name="vm", help="Perform actions on Virtual Machines: delete_vm_snapshots | power_off_vm")
+app.add_typer(esxi_testing_toolkit.cli.vm_commands.app, name="vm", help="Perform actions on Virtual Machines.")
 app.add_typer(esxi_testing_toolkit.cli.host_commands.app, name="host", help="Performs actions on the ESXi host.")
-app.add_typer(esxi_testing_toolkit.cli.base_commands.app, name="base", help="Display information about available tests")
+app.add_typer(esxi_testing_toolkit.cli.base_commands.app, name="base", help="Display information about available tests.")
 
 # app entrypoint
 def main():
+    # first let's check if $HOME/.esxi-testing-toolkit exists
+    if os.path.isdir(f"{os.path.expanduser('~')}/.esxi-testing-toolkit"):
+        pass
+    else:
+        logging.info(f"{os.path.expanduser('~')}/.esxi-testing-toolkit does not exist. Creating it now..")
+        os.mkdir(f"{os.path.expanduser('~')}/.esxi-testing-toolkit")
+    # start app
     app()
     
 if __name__ == "__main__":
