@@ -40,7 +40,7 @@ def enable_autostart(method: Annotated[ExecutionChoice, typer.Option(case_sensit
     """
     if method.value == "api":
         connection = initialize_api_connection()
-        logging.info(f'Sending API request to disable VM autostart')
+        logging.info(f'Sending API request to enable VM autostart')
         payload = """<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header><operationID>esxui-812e</operationID></Header><Body><ReconfigureAutostart xmlns="urn:vim25"><_this type="HostAutoStartManager">ha-autostart-mgr</_this><spec><defaults><enabled>true</enabled><startDelay>120</startDelay><stopDelay>120</stopDelay><waitForHeartbeat>false</waitForHeartbeat><stopAction>powerOff</stopAction></defaults></spec></ReconfigureAutostart></Body></Envelope>"""
         connection.send_request(payload=payload)
         if verbose:
@@ -48,10 +48,10 @@ def enable_autostart(method: Annotated[ExecutionChoice, typer.Option(case_sensit
             ssh_connection.retrieve_log('/var/log/hostd.log')
     else:
         connection = initialize_ssh_connection()
-        logging.warning('vim-cmd does NOT indicate if the system already had autostart disabled, only if the command was successful.')
+        logging.warning('vim-cmd does NOT indicate if the system already had autostart enabled, only if the command was successful.')
         command = f'vim-cmd hostsvc/autostartmanager/enable_autostart true'
         command_output = connection.send_ssh_command(command)
-        if 'Disabled AutoStart' in command_output:
+        if 'Enabled AutoStart' in command_output:
             logging.info(f'SSH command {command} executed successfully.')
             if verbose:
                 connection.retrieve_log('/var/log/shell.log')
@@ -137,7 +137,7 @@ def get_all_vm_ids(utility: Annotated[UtilityChoice, typer.Option(help="Utility 
         if verbose:
             connection.retrieve_log('/var/log/shell.log')
 
-@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], risk_level=['low'], methods=['API', 'SSH'], utilities=["vim-cmd", "esxcli"], cleanup = ["none"])
+@command_metadata(module=['host'], dependencies=['Reachable ESXi System'], mitre_attack=['T1082'], risk_level=['low'], methods=['SSH'], utilities=["vim-cmd", "esxcli"], cleanup = ["none"])
 @app.command()
 def get_system_info(utility: Annotated[UtilityChoice, typer.Option(help="Utility to use when executing. Ignored for non-SSH executions.")] = "vim-cmd", method: Annotated[ExecutionChoice, typer.Option(case_sensitive=False, help="Method of test execution.", show_choices=True)] = "ssh",  verbose: bool = False):
     """
