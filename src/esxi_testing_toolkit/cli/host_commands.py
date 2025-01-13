@@ -125,6 +125,10 @@ def get_all_vm_ids(utility: Annotated[UtilityChoice, typer.Option(help="Utility 
             file = request['soapenv:Envelope']['soapenv:Body']['RetrievePropertiesExResponse']['returnval']['objects']['propSet'][0]['val']['files']['vmPathName']
             vm_ids.append({'id': id, 'name': name, 'os_name': os_name, 'file': file})
         print(tabulate(vm_ids, headers={'id': 'Virtual Machine ID', 'name': 'Virtual Machine Name', 'os_name': 'Operating System', 'file': 'File Path'}, numalign="left"))
+        
+        if verbose:
+            connection = initialize_ssh_connection()
+            connection.retrieve_log('/var/log/hostd.log')
     elif method.value == "ssh":
         connection = initialize_ssh_connection()
         if utility.value == "vim-cmd":
