@@ -14,7 +14,7 @@
     ·
     <a href="#usage">Usage</a>
     ·
-    <a href="#detections">Detections</a>
+    <a href="#research--detections">Detections</a>
     ·
     <a href="#contribute">Contribute</a>
   </p>
@@ -176,12 +176,10 @@ esxi-testing-toolkit vm delete-vm-snapshots --vm-id=1 --method=ssh
 
 
 ## Research & Detections
-In order to limit the potential impact of releasing this tool publicly, I've published a blog post outlining how to detect most of the techniques included in ESXI Testing Toolkit.
+In order to limit the potential impact of releasing this tool publicly, I've created 18 Sigma detections that detect the techniques that the toolkit emulates. These detections are located in the `/detections` folder and are in the progress of being merged into the main [Sigma](https://github.com/SigmaHQ/sigma) repository.
 
-In addition to the blogpost I've also created Sigma rules for each test included in the toolkit. These tests can be found in the `/detections` folder of this repository. 
 
-<link to medium blogpost about ESXi detection engineering>
-<link to detections/ folder>
+I'm also working on a blog post surrounding detection enginering in ESXi environments, which will help educate defenders on how ESXi logging works and how to detect these techniques.
 
 ## Contribute
 This project welcomes any and all contributions. Simply open a pull request and I'll take a look as soon as I can!
