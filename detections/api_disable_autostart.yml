@@ -1,0 +1,24 @@
+title: ESXi Autostart Settings Modified via API
+id: 9b36af19-d6ac-4cda-b8b0-cb054c6ca3a3
+status: experimental
+description: Detects when autostart configuration settings are modified via the ESXi API
+references:
+    - 'undocumented ESXi API on $HOST_IP/sdk/'
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1529
+logsource:
+    category: hostd.log
+    product: linux
+detection:
+    selection_message:
+        Message|contains|all: 
+            - 'AutoStartManager'
+            - 'reconfigure'
+            - 'Task'
+    condition: all of selection_*
+falsepositives:
+    - Legitimate system administration actions
+level: high
+testing_command: 'esxi-testing-toolkit host disable-autostart --method=api --verbose'

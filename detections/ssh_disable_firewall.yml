@@ -28,3 +28,4 @@ detection:
 falsepositives:
     - Legitimate system administration actions
 level: high
+testing_command: 'esxi-testing-toolkit host disable-firewall --method=ssh --utility=esxcli --verbose'

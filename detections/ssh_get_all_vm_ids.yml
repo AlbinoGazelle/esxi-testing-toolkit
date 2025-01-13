@@ -1,0 +1,37 @@
+title: ESXi VM IDs Enumerated via ESXCLI or VIM-CMD
+id: 49a64cfb-0b2b-4176-b487-f85d83374ee9
+status: experimental
+description: Detects when ESXCLI or VIM-CMD is used to enumerate Virtual Machine IDs.
+references:
+    - https://developer.broadcom.com/xapis/esxcli-command-reference/7.0.0/namespace/esxcli_vm.html
+    - https://lolesxi-project.github.io/LOLESXi/lolesxi/Binaries/esxcli/
+    - https://lolesxi-project.github.io/LOLESXi/lolesxi/Binaries/vim-cmd
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1082
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_img:
+        Image|endswith: 
+            - '/esxcli'
+            - '/vim-cmd'
+    selection_cmd_vim:
+        CommandLine|contains:
+            - 'network'
+            - 'ip'
+            - 'interface'
+            - 'get'
+            - 'list'
+    selection_cmd_esxcli:
+      CommandLine|contains:
+          - 'vmsvc/getallvms'
+    condition: 1 of selection_img and 1 of selection_cmd_*
+falsepositives:
+    - Legitimate system administration actions
+level: low
+testing_command: 
+ - 'esxi-testing-toolkit host get-all-vm-ids --method=ssh --utility=esxcli --verbose'
+ - 'esxi-testing-toolkit host get-all-vm-ids --method=ssh --utility=vim-cmd --verbose'

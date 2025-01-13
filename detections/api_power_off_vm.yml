@@ -1,0 +1,22 @@
+title: ESXi Virtual Machine Powered Off via ESXi API
+id: efb66be2-c1f1-4625-93dd-8862d7c2cd80
+status: experimental
+description: Detects when a Virtual Machine is powered off via the ESXi API
+references:
+    - 'undocumented ESXi API on $HOST_IP/sdk/'
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1529
+logsource:
+    category: hostd.log
+    product: linux
+detection:
+    selection_message:
+        Message|contains: 
+            - 'Poweroff for VM'
+    condition: all of selection_*
+falsepositives:
+    - Legitimate system administration actions
+level: low
+testing_command: 'esxi-testing-toolkit vm power-off-vm --vm-id=1 --method=api --verbose'

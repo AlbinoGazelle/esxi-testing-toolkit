@@ -1,0 +1,29 @@
+title: ESXi Syslog Configuration Changed via ESXCLI
+id: 70f02885-981a-461a-b476-37494d6dc6ec
+status: experimental
+description: Detects when ESXCLI is used to change the syslog configuration on an ESXi host.
+references:
+    - https://developer.broadcom.com/xapis/esxcli-command-reference/7.0.0/namespace/esxcli_system.html
+    - https://lolesxi-project.github.io/LOLESXi/lolesxi/Binaries/esxcli/
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1562.001 
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_img:
+        Image|endswith: 
+            - '/esxcli'
+    selection_cmd:
+        CommandLine|contains:
+            - 'system'
+            - 'syslog'
+            - 'config'
+            - 'set'
+    condition: all of selection_*
+falsepositives:
+    - Legitimate system administration actions
+level: high
+testing_command: 'esxi-testing-toolkit host change-syslog-directory --path=/tmp --verbose'

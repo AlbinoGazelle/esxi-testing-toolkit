@@ -1,0 +1,32 @@
+title: ESXi Welcome Message Changed via ESXCLI
+id: 2d79ce52-ff97-4167-887e-af46ccaa3cba
+status: experimental
+description: Detects when ESXCLI is used to change the welcome message of an ESXi host.
+references:
+    - https://developer.broadcom.com/xapis/esxcli-command-reference/7.0.0/namespace/esxcli_system.html
+    - https://lolesxi-project.github.io/LOLESXi/lolesxi/Binaries/esxcli/
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1491.001
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_img:
+        Image|endswith: 
+            - '/esxcli'
+    selection_cmd:
+        CommandLine|contains:
+            - 'system'
+            - 'welcomemsg'
+            - 'set'
+    selection_cmd_message_switch:
+        CommandLine|contains:
+            - '-m'
+            - '--message'
+    condition: selection_img and 1 of selection_cmd_*
+falsepositives:
+    - Legitimate system administration actions
+level: high
+testing_command: 'esxi-testing-toolkit host change-welcome-message --message=$MESSAGE --verbose'

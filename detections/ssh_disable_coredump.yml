@@ -1,0 +1,33 @@
+title: ESXi Coredump Generation Disabled via ESXCLI
+id: d7f0cb0c-ba04-4b96-b99e-fe634b9d26d0
+status: experimental
+description: Detects when ESXCLI is used to disable coredump generation on an ESXi host.
+references:
+    - https://developer.broadcom.com/xapis/esxcli-command-reference/7.0.0/namespace/esxcli_system.html
+    - https://lolesxi-project.github.io/LOLESXi/lolesxi/Binaries/esxcli/
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1562.001
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_img:
+        Image|endswith: 
+            - '/esxcli'
+    selection_cmd:
+        CommandLine|contains:
+            - 'system'
+            - 'coredump'
+            - 'file'
+            - 'set'
+    selection_unconfigure_switch:
+        CommandLine|contains:
+            - '-u'
+            - '--unconfigure'
+    condition: selection_img and 1 of selection_cmd*
+falsepositives:
+    - Legitimate system administration actions
+level: high
+testing_command: 'esxi-testing-toolkit host disable-coredump --verbose'

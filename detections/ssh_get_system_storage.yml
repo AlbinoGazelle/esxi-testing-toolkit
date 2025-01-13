@@ -1,0 +1,39 @@
+title: ESXi System Storage Enumerated via ESXCLI
+id: a7b42845-4548-42ed-afd9-77946dd9df6e
+status: experimental
+description: Detects when ESXCLI is used to enumerate storage information on an ESXi host.
+references:
+    - https://developer.broadcom.com/xapis/esxcli-command-reference/7.0.0/namespace/esxcli_system.html
+    - https://lolesxi-project.github.io/LOLESXi/lolesxi/Binaries/esxcli/
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1082
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_img:
+        Image|endswith: '/esxcli'
+    selection_cmd_filesystem:
+        CommandLine|contains|all:
+            - 'storage'
+            - 'filesystem'
+            - 'list'
+    selection_cmd_vsan:
+        CommandLine|contains|all:
+            - 'vsan'
+            - 'debug'
+            - 'vmdk'
+            - 'list'
+    selection_cmd_device:
+        CommandLine|contains|all:
+            - 'storage'
+            - 'core'
+            - 'device'
+            - 'list'
+    condition: selection_img and 1 of selection_cmd
+falsepositives:
+    - Legitimate system administration actions
+level: low
+testing_command: 'esxi-testing-toolkit host get-system-storage --verbose'

@@ -21,3 +21,4 @@ detection:
 falsepositives:
     - Legitimate system administration actions
 level: medium
+testing_command: 'esxi-testing-toolkit host get-system-info --method=ssh --utility=vim-cmd'

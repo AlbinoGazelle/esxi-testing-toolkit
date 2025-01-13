@@ -1,0 +1,26 @@
+title: ESXi System Users Enumerated via ESXCLI
+id: 3f974fc2-522f-48fa-97e1-9635084e6fee
+status: experimental
+description: Detects when ESXCLI is used to enumerate a listing of all ESXi users.
+references:
+    - https://developer.broadcom.com/xapis/esxcli-command-reference/7.0.0/namespace/esxcli_system.html
+    - https://lolesxi-project.github.io/LOLESXi/lolesxi/Binaries/esxcli/
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1082
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_img:
+        Image|endswith: '/esxcli'
+        CommandLine|contains|all:
+            - 'system'
+            - 'account'
+            - 'list'
+    condition: all of selection_*
+falsepositives:
+    - Legitimate system administration actions
+level: low
+testing_command: 'esxi-testing-toolkit host get-system-users --method=ssh --verbose'

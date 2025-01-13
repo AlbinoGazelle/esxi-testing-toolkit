@@ -19,3 +19,4 @@ detection:
 falsepositives:
     - Legitimate system administration actions.
 level: medium
+testing_command: 'esxi-testing-toolkit host power-off-vm --vm-id=$VM_ID --method=ssh --verbose'

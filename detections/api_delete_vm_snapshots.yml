@@ -1,0 +1,22 @@
+title: ESXi Virtual Machine Snapshots Deleted via API
+id: 5531733a-ce9c-4789-b461-7bb797e14007
+status: experimental
+description: Detects when snapshots for a Virtual Machine are deleted via the ESXi API
+references:
+    - '2025-01-13T19:50:15.542Z verbose hostd[69548] [Originator@6876 sub=Vmsvc.vm:/vmfs/volumes/673fd53b-ef4df1e9-b63e-000c2994365f/test/test.vmx opID=esxui-e243-8ff9 user=root] Removeallsnapshots received. Consolidate: true'
+author: Nathan Burns
+date: 2025-01-13
+tags:
+    - attack.t1485
+logsource:
+    category: hostd.log
+    product: linux
+detection:
+    selection_message:
+        Message|contains: 
+            - 'Removeallsnapshots received'
+    condition: all of selection_*
+falsepositives:
+    - Legitimate system administration actions
+level: low
+testing_command: 'esxi-testing-toolkit vm delete-vm-snapshots --vm-id=1 --method=api --verbose'
