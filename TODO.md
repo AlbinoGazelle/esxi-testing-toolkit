@@ -1,5 +1,0 @@
-- Populate README.md
-    - data on available tests
-- Perform one more final review of all commands.
-- Test with other ESXi versions.
-- Create `detections` folder and add Sigma rules for all tests.
