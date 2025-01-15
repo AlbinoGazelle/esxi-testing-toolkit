@@ -179,7 +179,7 @@ esxi-testing-toolkit vm delete-vm-snapshots --vm-id=1 --method=ssh
 In order to limit the potential impact of releasing this tool publicly, I've created 18 Sigma detections that detect the techniques that the toolkit emulates. These detections are located in the `/detections` folder and are in the progress of being merged into the main [Sigma](https://github.com/SigmaHQ/sigma) repository.
 
 
-I'm also working on a blog post surrounding detection enginering in ESXi environments, which will help educate defenders on how ESXi logging works and how to detect these techniques in more detail.
+I've also released on a [blog post surrounding detection enginering in ESXi environments](https://medium.com/detect-fyi/vmware-esxi-logging-detection-opportunities-4fb56411ec21), which should help educate defenders on how ESXi logging works and how to detect these techniques in more detail.
 
 ## Contribute
 This project welcomes any and all contributions.
