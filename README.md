@@ -29,6 +29,9 @@
 
 ESXi Testing Toolkit is a command-line utility designed to help security teams test detections deployed in ESXi environments. It takes heavy inspiration from [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) but provides ESXi-specific enhancements and a simpler user experience.
 
+>[!NOTE]  
+>Interested in learning more about ESXi Detection Engineering? I wrote a detailed blog post on that topic, you can check it out [here!](https://detect.fyi/vmware-esxi-logging-detection-opportunities-4fb56411ec21)
+
 ## Features
 
 ### Diverse Test Suite
