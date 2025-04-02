@@ -17,7 +17,7 @@ detection:
         Image|endswith: 
             - '/esxcli'
     selection_cmd:
-        CommandLine|contains:
+        CommandLine|contains|all:
             - 'system'
             - 'coredump'
             - 'file'
@@ -26,7 +26,7 @@ detection:
         CommandLine|contains:
             - '-u'
             - '--unconfigure'
-    condition: selection_img and 1 of selection_cmd*
+    condition: selection_img and selection_cmd and selection_unconfigure_switch
 falsepositives:
     - Legitimate system administration actions
 level: high
