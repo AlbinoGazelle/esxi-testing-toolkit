@@ -17,7 +17,7 @@ detection:
         Image|endswith: 
             - '/esxcli'
     selection_cmd:
-        CommandLine|contains:
+        CommandLine|contains|all:
             - 'system'
             - 'syslog'
             - 'config'
