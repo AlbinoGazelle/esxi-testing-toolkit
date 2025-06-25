@@ -17,7 +17,7 @@ detection:
         Image|endswith: 
             - '/esxcli'
     selection_cmd:
-        CommandLine|contains:
+        CommandLine|contains|all:
             - 'system'
             - 'welcomemsg'
             - 'set'
@@ -25,7 +25,7 @@ detection:
         CommandLine|contains:
             - '-m'
             - '--message'
-    condition: selection_img and 1 of selection_cmd_*
+    condition: selection_img and selection_cmd and selection_cmd_message_switch
 falsepositives:
     - Legitimate system administration actions
 level: high
